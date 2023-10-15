@@ -14,10 +14,13 @@ app.use(cookieParser());
 // tell nodejs to access static file in public folder
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: false }));
-app.use("/", (req, res) => {
-    res.send("hello")
-})
+
 app.use(cors())
+
+app.use('/role', require('./routes/roleRoutes'))
+app.use('/user', require('./routes/userRoutes'))
+app.use('/', require('./routes/authRoutes'))
+
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
