@@ -15,11 +15,18 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: false }));
 
-app.use(cors())
-
+app.use(
+    cors({
+        credentials: true,
+        origin: "http://localhost:5173"
+    })
+)
 app.use('/role', require('./routes/roleRoutes'))
 app.use('/user', require('./routes/userRoutes'))
 app.use('/', require('./routes/authRoutes'))
+app.use('/service', require('./routes/serviceRoutes'))
+app.use('/product', require('./routes/productRoutes'))
+app.use('/pet', require('./routes/petRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)

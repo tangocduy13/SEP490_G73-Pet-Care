@@ -93,7 +93,7 @@ const updateUser = async (req, res) => {
         user.status = status
         user.userImage = userImage
         // update user
-        const result = user.save()
+        const result = await user.save()
         if (result) {
             res.status(201).json({
                 message: `Updated ${user.fullname}`
@@ -115,5 +115,5 @@ const updateUser = async (req, res) => {
 module.exports = {
     getAll,
     createUser,
-    updateUser
+    updateUser,
 }
