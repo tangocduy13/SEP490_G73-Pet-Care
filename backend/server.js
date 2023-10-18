@@ -28,6 +28,7 @@ app.use('/service', require('./routes/serviceRoutes'))
 app.use('/product', require('./routes/productRoutes'))
 app.use('/pet', require('./routes/petRoutes'))
 app.use('/order', require('./routes/orderRoutes'))
+app.use('/orderDetail', require('./routes/orderDetailRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)
