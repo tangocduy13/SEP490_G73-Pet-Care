@@ -7,7 +7,7 @@ const bookingSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        PetId: {
+        petId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Pet",
             required: true,

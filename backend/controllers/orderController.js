@@ -34,8 +34,11 @@ const getAllOrderByUserId = async (req, res) => {
 
 const createOrder = async (req, res) => {
     try {
-        const { userId, totalPrice, status } = req.body;
-        const order = new Order({ userId, totalPrice, status });
+        const { userId, totalPrice } = req.body;
+        const order = new Order();
+        order.userId = userId;
+        order.totalPrice = totalPrice;
+        order.status = false;
         const result = await order.save();
         if (!result){
             return res.status(404).json({
@@ -70,6 +73,24 @@ const updateOrder = async (req, res) => {
     }
 }
 
+const acceptOrder = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const order = await Order.findById(orderId);
+        if (!order){
+            return res.status(404).json({
+                error: "Order: " + orderId + " not found!"
+            })
+        } 
+        order.status = true;
+        const result = await order.save();
+        res.status(200).json(result)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 const deleteOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId;
@@ -91,10 +112,13 @@ const deleteOrder = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     getAllOrder,
     getAllOrderByUserId,
     createOrder,
     updateOrder,
+    acceptOrder,
     deleteOrder
 }
