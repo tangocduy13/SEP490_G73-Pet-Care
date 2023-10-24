@@ -1,0 +1,219 @@
+[
+  {
+    "_id": "652d6275e46006144ccc6c7f",
+    "serviceName": "tắm cho mèo abc",
+    "description": "bao gồm các bước mát-xa, tắm, sấy lông",
+    "price": 500,
+    "type": "meow",
+    "serviceImage": "not yet",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "652f95854acbc28e5828465a",
+    "serviceName": "tắm cho chó",
+    "status": true,
+    "description": "bao gồm các bước mát-xa, tắm, sấy lông",
+    "price": 500,
+    "title": "tắm",
+    "type": "meow",
+    "serviceImage": "not yet",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535670e19344ef5e2cecbf1",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535671119344ef5e2cecbf3",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535671219344ef5e2cecbf5",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535671219344ef5e2cecbf7",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535671219344ef5e2cecbf9",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6535671219344ef5e2cecbfb",
+    "serviceName": "chải lông cho mèo",
+    "status": true,
+    "description": "sau khi tắm xong sẽ chải lông cho mèo",
+    "price": 100000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "653567d319344ef5e2cecc00",
+    "serviceName": "a",
+    "status": true,
+    "description": "a",
+    "price": 0,
+    "title": "a",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "65356f5119344ef5e2cecc09",
+    "serviceName": "tắm cho chó",
+    "status": true,
+    "description": "tắm cho chó",
+    "price": 90000,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "653611c083ccb614b8a5fcbb",
+    "serviceName": "aa",
+    "status": true,
+    "description": "",
+    "price": 1220,
+    "title": "a",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6536121883ccb614b8a5fcbf",
+    "serviceName": "a",
+    "status": true,
+    "description": "ádasda",
+    "price": 57,
+    "title": "a",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6536156a83ccb614b8a5fcc9",
+    "serviceName": "tắm",
+    "status": true,
+    "description": "tắm",
+    "price": 0,
+    "title": "tắm",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "653615ca83ccb614b8a5fccd",
+    "serviceName": "ăn cơm",
+    "status": true,
+    "description": "cho thú cưng ăn",
+    "price": 22220,
+    "title": "ăn",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6536173a83ccb614b8a5fcd1",
+    "serviceName": "mát xa cho chó",
+    "status": true,
+    "description": "tắm + trải lông",
+    "price": 0,
+    "title": "mát xa",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6536175083ccb614b8a5fcd4",
+    "serviceName": "11",
+    "status": true,
+    "description": "1",
+    "price": 0,
+    "title": "11",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "6536176c83ccb614b8a5fcd7",
+    "serviceName": "tắm cho mèo",
+    "status": true,
+    "description": "1",
+    "price": 0,
+    "title": "1",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "653619aa83ccb614b8a5fce0",
+    "serviceName": "a",
+    "status": true,
+    "description": "a",
+    "price": 0,
+    "title": "â",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "65368d62591336fc6e64320d",
+    "serviceName": "tỉa lông",
+    "status": true,
+    "description": "bao gồm các bước mát-xa, tắm, sấy lông",
+    "price": 200,
+    "title": "tắm",
+    "type": "meow",
+    "serviceImage": "not yet",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "65368ee3591336fc6e64320f",
+    "serviceName": "tỉa lông",
+    "status": true,
+    "description": "bao gồm các bước mát-xa, tắm, sấy lông",
+    "price": 200,
+    "title": "tắm",
+    "type": "meo,cho",
+    "serviceImage": "not yet",
+    "__v": 0,
+    "serviceInfo": []
+  },
+  {
+    "_id": "65376a736f5f728567d3ec30",
+    "serviceName": "tiêm vắc xin",
+    "status": true,
+    "description": "tiêm vắc xin cho an",
+    "price": 500,
+    "categoryId": "6537670854c530426554f6b3",
+    "serviceImage": "not yet",
+    "__v": 0,
+    "serviceInfo": []
+  }
+]

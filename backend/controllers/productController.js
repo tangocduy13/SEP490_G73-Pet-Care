@@ -14,11 +14,11 @@ const getAll = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { productName, quantity, productImage } = req.body
+        const { productName, quantity, price, productImage } = req.body
         if (!productName) return res.status(400).json({
             error: "Product name is required"
         })
-        const product = await Product.create({ productName, quantity, productImage })
+        const product = await Product.create({ productName, quantity, price, productImage })
         if (!product) return res.status(400).json({
             error: "Create product fail. Please try again"
         })

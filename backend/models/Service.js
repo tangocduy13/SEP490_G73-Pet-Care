@@ -14,8 +14,11 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         default: 1,
     },
-    title: String,
-    type: String,
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ServiceCategory",
+        required: true,
+    },
     serviceImage: String,
 })
 

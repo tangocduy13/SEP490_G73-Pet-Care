@@ -3,7 +3,8 @@ const router = express.Router()
 const usersController = require('../controllers/usersController')
 
 router.get('/', usersController.getAll)
-router.post('/', usersController.createUser)
-router.patch('/', usersController.updateUser)
+    .post('/', usersController.createUser)
+    .patch('/', usersController.updateUser)
+    .delete('/', usersController.deleteOne)
 
 module.exports = router

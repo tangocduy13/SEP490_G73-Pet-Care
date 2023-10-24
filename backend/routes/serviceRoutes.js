@@ -3,7 +3,9 @@ const router = express.Router()
 const serviceController = require('../controllers/serviceController')
 
 router.get('/', serviceController.getAll)
-router.post('/', serviceController.createService)
-router.patch('/', serviceController.updateService)
+    .post('/', serviceController.createService)
+    .patch('/', serviceController.updateService)
+    .delete('/', serviceController.deleteById)
+    .get('/find', serviceController.findServiceByCateId)
 
 module.exports = router

@@ -30,11 +30,11 @@ const login = async (req, res) => {
             return res.json({
                 error: 'Wrong password'
             })
-        const roleName = await Role.findById(user.roleId).roleName
+
         const token = jwt.sign(
             {
                 email: user.email,
-                role: roleName,
+                role: user.role,
             },
             process.env.SECRET_KEY,
             {
@@ -54,7 +54,7 @@ const login = async (req, res) => {
 // method POST
 const register = async (req, res) => {
     try {
-        const { fullname, email, password, roleId, phone, address, gender, status, userImage } = req.body
+        const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
         // check value valid
         if (!fullname || !email || !password) {
             res.json({
@@ -77,7 +77,7 @@ const register = async (req, res) => {
 
         const hashPassword = await bcrypt.hash(password, 10)
 
-        const user = await User.create({ fullname, email, "password": hashPassword, roleId, phone, address, gender, status, userImage })
+        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
         if (!user) {
             res.json({
                 error: "Server error! Please try again"

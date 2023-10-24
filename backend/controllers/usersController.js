@@ -24,7 +24,7 @@ const getAll = async (req, res) => {
 // POST
 const createUser = async (req, res) => {
     try {
-        const { fullname, email, password, roleId, phone, address, gender, status, userImage } = req.body
+        const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
         // check value valid
         if (!fullname || !email || !password) {
             res.status(500).json({
@@ -47,7 +47,7 @@ const createUser = async (req, res) => {
 
         const hashPassword = await bcrypt.hash(password, 10)
 
-        const user = await User.create({ fullname, email, "password": hashPassword, roleId, phone, address, gender, status, userImage })
+        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
         if (!user) {
             res.status(500).json({
                 error: "Server error! Please try again"
@@ -71,7 +71,7 @@ const createUser = async (req, res) => {
 // PATCH
 const updateUser = async (req, res) => {
     try {
-        const { fullname, email, password, roleId, phone, address, gender, status, userImage } = req.body
+        const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
         // check value valid
         if (!fullname || !password) {
             res.status(500).json({
@@ -86,7 +86,7 @@ const updateUser = async (req, res) => {
         }
         user.fullname = fullname
         user.password = password
-        user.roleId = roleId
+        user.role = role
         user.phone = phone
         user.address = address
         user.gender = gender
@@ -111,9 +111,23 @@ const updateUser = async (req, res) => {
         })
     }
 }
-
+// route '/user'
+// DELETE
+const deleteOne = async (req, res) => {
+    const { id } = req.body
+    try {
+        await User.findByIdAndDelete(id)
+        res.status(201).json({
+            message: `Deleted user ${id}`
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400)
+    }
+}
 module.exports = {
     getAll,
     createUser,
     updateUser,
+    deleteOne
 }
