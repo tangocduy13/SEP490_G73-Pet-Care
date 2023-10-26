@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate');
 
 const serviceSchema = new mongoose.Schema({
     serviceName: {
@@ -22,4 +23,5 @@ const serviceSchema = new mongoose.Schema({
     serviceImage: String,
 })
 
+serviceSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model('Service', serviceSchema)

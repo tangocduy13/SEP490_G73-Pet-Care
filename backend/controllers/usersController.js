@@ -6,14 +6,51 @@ const bcrypt = require('bcrypt')
 // GET
 const getAll = async (req, res) => {
     try {
-        const users = await User.find()
-        if (!(await users).length) {
-            return res.status(404).json({
-                error: "User not found"
-            })
+        const { fullname, email, role, status, sort, page, limit } = req.query
+        const query = {}
+
+        if (fullname) {
+            query.fullname = fullname
         }
-        res.status(200).json(users)
+        if (email) {
+            query.email = email
+        }
+        if (role) {
+            query.role = role
+        }
+        if (status) {
+            query.status = status === 'true'
+        }
+
+        const options = {
+            sort: { fullname: 1 }, // sắp xếp tên theo thứ tự bảng chữ cái alpha b
+            page: parseInt(page) || 1, // Trang mặc định là 1
+            limit: parseInt(limit) || 5, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 5 để test phân trang
+        }
+        if (sort === 'asc') {
+            options.sort = { email: 1 } // sắp xếp email theo bảng chứ cái
+        }
+        if (sort === 'desc') {
+            options.sort = { email: -1 }
+        }
+
+        const result = await User.paginate(query, options)
+
+        if (!result.docs || result.docs.length === 0) {
+            return res.status(404).json({
+                error: "There are no Users in the Database",
+            });
+        }
+        res.status(200).json(result);
+        // const users = await User.find()
+        // if (!(await users).length) {
+        //     return res.status(404).json({
+        //         error: "User not found"
+        //     })
+        // }
+        // res.status(200).json(users)
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             error: err
         })

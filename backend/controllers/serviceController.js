@@ -5,11 +5,29 @@ const Category = require('../models/Category')
 // method: GET
 const getAll = async (req, res) => {
     try {
-        const services = await Service.find()
-        if (!services) return res.status(404).json({
-            error: 'No service found'
-        })
-        res.status(200).json(services)
+        const { sortPrice, page, limit, serviceName } = req.query
+
+        const query = {}
+
+        const options = {
+            page: parseInt(page) || 1, // mặc định trang là 1
+            limit: parseInt(limit) || 5, // tạm thời để là 5 cho An test paging
+            query: { serviceName: { $regex: serviceName, $options: 'i' } } // Apply the "like" query
+        }
+        if (sortPrice === 'asc') {
+            options.sort = { price: 1 } // sắp xếp giá theo giá tăng dần
+        } else if (sortPrice === 'desc') {
+            options.sort = { price: -1 } // sắp xếp theo giá giảm dần
+        }
+
+        const result = await Service.paginate(query, options)
+
+        if (!result.docs || result.docs.length === 0) {
+            return res.status(404).json({
+                error: "There are no Service in the Database",
+            });
+        }
+        res.status(200).json(result);
     } catch (err) {
         console.log(err)
         res.status(400).json(err)
@@ -77,6 +95,8 @@ const findServiceByCateId = async (req, res) => {
         console.log(err)
     }
 }
+// route: "/service"
+// method: DELETE
 const deleteById = async (req, res) => {
     try {
         const { id } = req.body
