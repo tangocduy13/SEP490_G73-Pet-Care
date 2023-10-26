@@ -34,6 +34,7 @@ app.use('/order', require('./routes/orderRoutes'))
 app.use('/orderDetail', require('./routes/orderDetailRoutes'))
 app.use('/booking', require('./routes/bookingRoutes'))
 app.use('/bookingDetail', require('./routes/bookingDetailRoutes'))
+app.use('/cartService', require('./routes/cartServiceRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)

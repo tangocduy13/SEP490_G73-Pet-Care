@@ -1,13 +1,14 @@
 const CartService = require('../models/CartService');
 const Service = require('../models/Service')
+const jwt = require('jsonwebtoken');
 
 
 const viewCart = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
-        const token = req.cookies.token;
+        const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.userId; 
+        const userId = decoded.id; 
 
         const cartItems = await CartService.find({ userId });
         res.status(200).json(cartItems);
@@ -20,10 +21,10 @@ const viewCart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
-        const token = req.cookies.token;
+        // const token = req.cookies.token;
+        const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.userId; 
-
+        const userId = decoded.id; 
         const serviceId = req.params.serviceId;
         const service = await Service.findById(serviceId);
 
@@ -34,7 +35,7 @@ const addToCart = async (req, res) => {
         }
 
         let cartService = await CartService.findOne({ userId, serviceId });
-
+        
         if (cartService) {
             cartService.quantity += 1;
         } else {
@@ -44,9 +45,10 @@ const addToCart = async (req, res) => {
                 quantity: 1
             });
         }
-        await cartService.save();
+        const result = await cartService.save();
         res.json({
-            message: 'Add service ' + serviceId + ' to cart success!'
+            message: 'Add service ' + serviceId + ' to cart success!',
+            result
         });
     } catch (err) {
         console.error(err);
