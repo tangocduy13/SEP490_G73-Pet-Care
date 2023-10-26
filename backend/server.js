@@ -21,6 +21,8 @@ app.use(
         origin: "http://localhost:5173"
     })
 )
+
+
 app.use('/role', require('./routes/roleRoutes'))
 app.use('/user', require('./routes/userRoutes'))
 app.use('/', require('./routes/authRoutes'))
