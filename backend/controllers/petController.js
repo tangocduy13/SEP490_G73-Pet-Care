@@ -1,24 +1,18 @@
 const Pet = require('../models/Pet')
+const mongoosePaginate = require('mongoose-paginate');
 
 const getAll = async (req, res) => {
     try {
-        const { sortPrice, page, limit } = req.query
+        const { page, limit } = req.query
 
         const query = {}
 
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
-            query: { serviceName: { $regex: serviceName, $options: 'i' } } // Apply the "like" query
         }
 
-        if (sortPrice === 'asc') {
-            options.sort = { price: 1 } // sắp xếp giá theo giá tăng dần
-        } else if (sortPrice === 'desc') {
-            options.sort = { price: -1 } // sắp xếp theo giá giảm dần
-        }
-
-        const result = await Service.paginate(query, options)
+        const result = await Pet.paginate(query, options)
 
         if (!result.docs || result.docs.length === 0) {
             return res.status(404).json({

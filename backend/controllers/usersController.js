@@ -42,13 +42,6 @@ const getAll = async (req, res) => {
             });
         }
         res.status(200).json(result);
-        // const users = await User.find()
-        // if (!(await users).length) {
-        //     return res.status(404).json({
-        //         error: "User not found"
-        //     })
-        // }
-        // res.status(200).json(users)
     } catch (err) {
         console.log(err)
         res.status(500).json({
