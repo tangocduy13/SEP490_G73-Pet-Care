@@ -3,6 +3,7 @@ const router = express.Router()
 const cartServiceController = require('../controllers/cartServiceController')
 
 router.get('/view-cart', cartServiceController.viewCart)
-.post('/add-to-cart/:serviceId', cartServiceController.addToCart)
+.get('/checkout', cartServiceController.checkout)
+.post('/add-to-cart', cartServiceController.addToCart)
    
 module.exports = router   

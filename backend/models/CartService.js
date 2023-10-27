@@ -6,6 +6,11 @@ const CartServiceSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
+    petId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Pet",
+        required: true,
+    },
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Service",
@@ -15,7 +20,6 @@ const CartServiceSchema = new mongoose.Schema({
         type: Number,
         default: 1,
     }
-
 })
 
 module.exports = mongoose.model('CartService', CartServiceSchema)

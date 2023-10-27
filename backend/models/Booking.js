@@ -8,11 +8,6 @@ const bookingSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        petId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Pet",
-            required: true,
-        },
         totalPrice: {
             type: Number,
             default: 1,

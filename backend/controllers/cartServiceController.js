@@ -1,5 +1,7 @@
 const CartService = require('../models/CartService');
 const Service = require('../models/Service')
+const Booking = require('../models/Booking');
+const BookingDetail = require('../models/BookingDetail');
 const jwt = require('jsonwebtoken');
 
 
@@ -25,7 +27,9 @@ const addToCart = async (req, res) => {
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
-        const serviceId = req.params.serviceId;
+
+        const { serviceId, petId } = req.body;
+       
         const service = await Service.findById(serviceId);
 
         if (!service) {
@@ -34,13 +38,14 @@ const addToCart = async (req, res) => {
             });
         }
 
-        let cartService = await CartService.findOne({ userId, serviceId });
+        let cartService = await CartService.findOne({ userId, serviceId, petId });
         
         if (cartService) {
             cartService.quantity += 1;
         } else {
             cartService = new CartService({
                 userId,
+                petId,
                 serviceId,
                 quantity: 1
             });
@@ -56,8 +61,68 @@ const addToCart = async (req, res) => {
     }
 }
 
+const checkout = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        // const token = req.cookies.token;
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id; 
+
+        const cartItems = await CartService.find({ userId });
+
+        if (cartItems.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty' });
+        }
+
+        // Create a new booking record
+        let total = 0;
+        const booking = new Booking({
+            userId: userId,
+            totalPrice: total, 
+            status: false,
+        });
+        const createdBooking = await booking.save();
+        
+        // Create booking details for each cart item
+        for (const cartItem of cartItems) {
+
+            const service = await Service.findById(cartItem.serviceId);
+
+            // if (service) {
+                const bookingDetail = new BookingDetail({
+                    bookingId: createdBooking._id,
+                    petId: cartItem.petId,
+                    serviceId: cartItem.serviceId,
+                    quantity: cartItem.quantity,
+                });
+
+                await bookingDetail.save();
+
+                // Update the total price
+                total += service.price * cartItem.quantity;
+            // }
+        }
+
+        // Update the booking's total price
+        createdBooking.totalPrice = total;
+        await createdBooking.save();
+
+        // Remove all cart items for the user
+        await CartService.deleteMany({ userId });
+
+        res.status(200).json({
+            message: 'Checkout successful',
+            booking: createdBooking,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err, message: 'Can not checkout'});
+    }
+}
 
 module.exports = {
     addToCart,
-    viewCart
+    viewCart,
+    checkout
 }
