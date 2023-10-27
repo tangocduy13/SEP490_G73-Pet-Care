@@ -52,7 +52,7 @@ const updateCategory = async (req, res) => {
 // DELETE
 const deleteOne = async (req, res) => {
     try {
-        const { id } = req.body
+        const { id } = req.params
         const category = await Category.findById(id)
         if (!category) return res.status(404).json({
             error: "Cacategory not found"

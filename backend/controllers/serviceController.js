@@ -99,7 +99,7 @@ const findServiceByCateId = async (req, res) => {
 // method: DELETE
 const deleteById = async (req, res) => {
     try {
-        const { id } = req.body
+        const { id } = req.params
         await Service.findByIdAndDelete(id).then(() => {
             res.status(201).json({
                 message: `Deleted ${id}`

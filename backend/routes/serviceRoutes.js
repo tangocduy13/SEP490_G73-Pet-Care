@@ -5,7 +5,7 @@ const serviceController = require('../controllers/serviceController')
 router.get('/', serviceController.getAll)
     .post('/', serviceController.createService)
     .patch('/', serviceController.updateService)
-    .delete('/', serviceController.deleteById)
+    .delete('/:id', serviceController.deleteById)
     .get('/find', serviceController.findServiceByCateId)
 
 module.exports = router
