@@ -2,8 +2,22 @@ const Product = require("../models/Product")
 
 const getAll = async (req, res) => {
     try {
-        const products = await Product.find()
-        res.status(200).json(products)
+        const { page, limit } = req.query
+        const query = {}
+
+        const options = {
+            page: parseInt(page) || 1, // mặc định trang là 1
+            limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
+        }
+
+        const result = await Product.paginate(query, options)
+
+        if (!result.docs || result.docs.length === 0) {
+            return res.status(404).json({
+                error: "There are no Product in the Database",
+            });
+        }
+        res.status(200).json(result);
     } catch (err) {
         console.log(err)
         res.status(500).json({
