@@ -25,7 +25,7 @@ const getAll = async (req, res) => {
         const options = {
             sort: { fullname: 1 }, // sắp xếp tên theo thứ tự bảng chữ cái alpha b
             page: parseInt(page) || 1, // Trang mặc định là 1
-            limit: parseInt(limit) || 5, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 5 để test phân trang
+            limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 5 để test phân trang
         }
         if (sort === 'asc') {
             options.sort = { email: 1 } // sắp xếp email theo bảng chứ cái

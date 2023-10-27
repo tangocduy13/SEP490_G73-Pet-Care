@@ -11,7 +11,7 @@ const getAll = async (req, res) => {
 
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
-            limit: parseInt(limit) || 5, // tạm thời để là 5 cho An test paging
+            limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
             query: { serviceName: { $regex: serviceName, $options: 'i' } } // Apply the "like" query
         }
         if (sortPrice === 'asc') {
