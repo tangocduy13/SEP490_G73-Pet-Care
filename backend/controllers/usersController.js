@@ -168,7 +168,7 @@ const getUserById = async (req, res) => {
 // route '/user'
 // DELETE
 const deleteOne = async (req, res) => {
-    const { id } = req.body
+    const { id } = req.params
     try {
         await User.findByIdAndDelete(id)
         res.status(201).json({
