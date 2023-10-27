@@ -1,9 +1,8 @@
-const CartService = require('../models/CartService');
-const Service = require('../models/Service')
-const Booking = require('../models/Booking');
-const BookingDetail = require('../models/BookingDetail');
+const CartProduct = require('../models/CartProduct');
+const Product = require('../models/Product')
+const Order = require('../models/Order');
+const OrderDetail = require('../models/OrderDetail');
 const jwt = require('jsonwebtoken');
-
 
 const viewCart = async (req, res) => {
     try {
@@ -12,7 +11,7 @@ const viewCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const cartItems = await CartService.find({ userId });
+        const cartItems = await CartProduct.find({ userId });
         res.status(200).json(cartItems);
     } catch (err) {
         console.error(err);
@@ -28,31 +27,30 @@ const addToCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const { serviceId, petId } = req.body;
+        const productId = req.params.productId;
        
-        const service = await Service.findById(serviceId);
+        const product = await Product.findById(productId);
 
-        if (!service) {
+        if (!product) {
             return res.json({
-                error: 'Service: ' + serviceId + ' not found.'
+                error: 'Product: ' + productId + ' not found.'
             });
         }
 
-        let cartService = await CartService.findOne({ userId, serviceId, petId });
+        let cartProduct = await CartProduct.findOne({ userId, productId});
         
-        if (cartService) {
-            cartService.quantity += 1;
+        if (cartProduct) {
+            cartProduct.quantity += 1;
         } else {
-            cartService = new CartService({
-                userId,
-                petId,
-                serviceId,
+            cartProduct = new CartProduct({
+                userId: userId,
+                productId: productId,
                 quantity: 1
             });
         }
-        const result = await cartService.save();
+        const result = await cartProduct.save();
         res.json({
-            message: 'Add service ' + serviceId + ' to cart success!',
+            message: 'Add product ' + productId + ' to cart success!',
             result
         });
     } catch (err) {
@@ -69,7 +67,7 @@ const checkout = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const cartItems = await CartService.find({ userId });
+        const cartItems = await CartProduct.find({ userId });
 
         if (cartItems.length === 0) {
             return res.status(400).json({ message: 'Cart is empty' });
@@ -77,43 +75,42 @@ const checkout = async (req, res) => {
 
         // Create a new booking record
         let total = 0;
-        const booking = new Booking({
+        const order = new Order({
             userId: userId,
             totalPrice: total, 
             status: false,
         });
-        const createdBooking = await booking.save();
+        const createdOrder = await order.save();
         
         // Create booking details for each cart item
         for (const cartItem of cartItems) {
 
-            const service = await Service.findById(cartItem.serviceId);
+            const product = await Product.findById(cartItem.productId);
 
-            if (service) {
-                const bookingDetail = new BookingDetail({
-                    bookingId: createdBooking._id,
-                    petId: cartItem.petId,
-                    serviceId: cartItem.serviceId,
+            if (product) {
+                const orderDetail = new OrderDetail({
+                    orderId: createdOrder._id,
+                    productId: cartItem.productId,
                     quantity: cartItem.quantity,
                 });
 
-                await bookingDetail.save();
+                await orderDetail.save();
 
                 // Update the total price
-                total += service.price * cartItem.quantity;
+                total += product.price * cartItem.quantity;
             }
         }
 
         // Update the booking's total price
-        createdBooking.totalPrice = total;
-        await createdBooking.save();
+        createdOrder.totalPrice = total;
+        await createdOrder.save();
 
         // Remove all cart items for the user
-        await CartService.deleteMany({ userId });
+        await CartProduct.deleteMany({ userId });
 
         res.status(200).json({
             message: 'Checkout successful',
-            booking: createdBooking,
+            order: createdOrder,
         });
     } catch (err) {
         console.error(err);
