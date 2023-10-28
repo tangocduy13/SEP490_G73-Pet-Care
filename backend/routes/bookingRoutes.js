@@ -6,7 +6,7 @@ router.get('/', bookingController.getAllBooking)
     .get('/:userId', bookingController.getAllBookingByUserId)
     .post('/', bookingController.createBooking)
     .put('/:bookingId', bookingController.updateBooking)
-    .put('/accept/:bookingId', bookingController.acceptBooking)
+    .put('/update-status/:bookingId', bookingController.updateStatus)
     .delete('/:bookingId', bookingController.deleteBooking)
 
 module.exports = router    

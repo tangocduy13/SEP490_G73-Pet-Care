@@ -67,7 +67,7 @@ const createBooking = async (req, res) => {
         booking.userId = userId;
         booking.petId = petId;
         booking.totalPrice = totalPrice;
-        booking.status = false;
+        booking.status = 'Process';
         const result = await booking.save();
         if (!result) {
             return res.status(404).json({
@@ -103,24 +103,6 @@ const updateBooking = async (req, res) => {
     }
 }
 
-const acceptBooking = async (req, res) => {
-    try {
-        const bookingId = req.params.bookingId;
-        const booking = await Booking.findById(bookingId);
-        if (!booking) {
-            return res.status(404).json({
-                error: "Booking: " + bookingId + " not found!"
-            })
-        }
-        booking.status = true;
-        const result = await booking.save();
-        res.status(200).json(result)
-    } catch (err) {
-        console.log(err)
-        res.status(500).json(err)
-    }
-}
-
 const deleteBooking = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
@@ -142,6 +124,24 @@ const deleteBooking = async (req, res) => {
     }
 }
 
+const updateStatus = async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const { bookingStatus } = req.body;
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+            return res.status(404).json({
+                error: "Booking: " + bookingId + " not found!"
+            })
+        }
+        booking.status = bookingStatus;
+        const result = await booking.save();
+        res.status(200).json(result)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
 
 
 module.exports = {
@@ -149,6 +149,6 @@ module.exports = {
     getAllBookingByUserId,
     createBooking,
     updateBooking,
-    acceptBooking,
-    deleteBooking
+    deleteBooking,
+    updateStatus
 }

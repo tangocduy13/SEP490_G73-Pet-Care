@@ -80,7 +80,7 @@ const checkout = async (req, res) => {
         const booking = new Booking({
             userId: userId,
             totalPrice: total, 
-            status: false,
+            status: 'Process',
         });
         const createdBooking = await booking.save();
         

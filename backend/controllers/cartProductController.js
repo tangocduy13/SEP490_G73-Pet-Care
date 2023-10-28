@@ -78,7 +78,7 @@ const checkout = async (req, res) => {
         const order = new Order({
             userId: userId,
             totalPrice: total, 
-            status: false,
+            status: 'Ordered',
         });
         const createdOrder = await order.save();
         

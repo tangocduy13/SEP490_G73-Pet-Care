@@ -13,8 +13,7 @@ const bookingSchema = new mongoose.Schema(
             default: 1,
         },
         status: {
-            type: Boolean,
-            default: false,
+            type: String
         },
     },
     {
