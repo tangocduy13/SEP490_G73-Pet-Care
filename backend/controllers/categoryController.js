@@ -68,9 +68,31 @@ const deleteOne = async (req, res) => {
         })
     }
 }
+// route '/catename/:name'
+// GET
+const getCategoryByName = async (req, res) => {
+    try {
+        const { name } = req.params
+        const category = await Category.find({ categoryName: { $regex: name } })
+        if (!category) {
+            res.json({
+                error: "Category not found"
+            })
+        }
+        return res.status(200).json({
+            data: category
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
 module.exports = {
     createCategory,
     getAll,
     updateCategory,
-    deleteOne
+    deleteOne,
+    getCategoryByName
 }
