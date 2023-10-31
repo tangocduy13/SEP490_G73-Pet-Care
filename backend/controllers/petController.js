@@ -62,8 +62,21 @@ const updatePet = async (req, res) => {
     }
 }
 
+const getPetByUserId = async (req, res) => {
+    try {
+        const { id } = req.params
+        const pet = await Pet.find({ userId: id })
+        res.status(200).json({
+            data: pet
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     getAll,
     createPet,
-    updatePet
+    updatePet,
+    getPetByUserId,
 }
