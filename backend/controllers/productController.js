@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { id, productName, quantity, productImage } = req.body
+        const { id, productName, quantity, price, productImage } = req.body
         if (!productName) return res.status(400).json({
             error: "Product name is required"
         })
@@ -56,6 +56,7 @@ const updateProduct = async (req, res) => {
         const product = await Product.findById(id)
         product.productName = productName
         product.quantity = quantity
+        product.price = price
         product.productImage = productImage
         await product.save()
         res.status(201).json({
