@@ -83,8 +83,8 @@ const updateService = async (req, res) => {
 // method: GET
 const findServiceByCateId = async (req, res) => {
     try {
-        const { cateId } = req.body
-        const services = await Service.find({ categoryId: cateId })
+        const { id } = req.params
+        const services = await Service.find({ categoryId: id })
         if (!services) {
             res.json(404).json({
                 error: "Service not found"

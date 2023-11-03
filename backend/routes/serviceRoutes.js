@@ -6,6 +6,6 @@ router.get('/', serviceController.getAll)
     .post('/', serviceController.createService)
     .patch('/', serviceController.updateService)
     .delete('/:id', serviceController.deleteById)
-    .get('/find', serviceController.findServiceByCateId)
+    .get('/find/:id', serviceController.findServiceByCateId)
 
 module.exports = router
