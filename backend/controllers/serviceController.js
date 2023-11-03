@@ -55,7 +55,7 @@ const createService = async (req, res) => {
 // method: PATCH
 const updateService = async (req, res) => {
     try {
-        const { id, serviceName, status, description, price, title, type, serviceImage } = req.body
+        const { id, serviceName, status, description, price, title, type, categoryId, serviceImage } = req.body
         const service = await Service.findById(id)
         if (!service) return res.status(404).json({
             error: "Service not found"
@@ -66,6 +66,7 @@ const updateService = async (req, res) => {
         service.price = price
         service.title = title
         service.type = type
+        service.categoryId = categoryId
         service.serviceImage = serviceImage
         const result = await service.save()
         if (!result) return res.status(400).json({
