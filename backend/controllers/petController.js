@@ -29,8 +29,8 @@ const getAll = async (req, res) => {
 
 const createPet = async (req, res) => {
     try {
-        const { userId, petName, rank, status, category, petImage } = req.body
-        const pet = await Pet.create({ userId, petName, rank, status, category, petImage })
+        const { userId, petName, rank, status, categoryId, petImage } = req.body
+        const pet = await Pet.create({ userId, petName, rank, status, categoryId, petImage })
         res.status(201).json({
             message: "Created successful",
             pet: pet
@@ -43,13 +43,13 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
     try {
-        const { id, userId, petName, rank, status, category, petImage } = req.body
+        const { id, userId, petName, rank, status, categoryId, petImage } = req.body
         const pet = await Pet.findById(id)
         pet.userId = userId
         pet.petName = petName
         pet.rank = rank
         pet.status = status
-        pet.category = category
+        pet.categoryId = categoryId
         pet.petImage = petImage
 
         await pet.save()
