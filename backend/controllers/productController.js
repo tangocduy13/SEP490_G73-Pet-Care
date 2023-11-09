@@ -28,13 +28,14 @@ const getAll = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { categoryId, productName, quantity, price, productImage } = req.body;
+        const { categoryId, productName, quantity, price, description, productImage } = req.body;
 
         const product = await Product.create({
             categoryId,
             productName,
             quantity,
             price,
+            description,
             productImage,
         });
         if (!product)
@@ -53,7 +54,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { id, categoryId, productName, quantity, price, productImage } = req.body;
+        const { id, categoryId, productName, quantity, price, description, productImage } = req.body;
         if (!productName)
             return res.status(400).json({
                 error: "Product name is required",
@@ -64,6 +65,7 @@ const updateProduct = async (req, res) => {
         product.productName = productName;
         product.quantity = quantity;
         product.price = price;
+        product.description = description;
         product.productImage = productImage;
         await product.save();
         res.status(201).json({
