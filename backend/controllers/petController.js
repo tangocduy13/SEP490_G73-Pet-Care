@@ -1,5 +1,5 @@
 const Pet = require('../models/Pet')
-const mongoosePaginate = require('mongoose-paginate');
+const User = require('../models/User')
 
 const getAll = async (req, res) => {
     try {
@@ -12,11 +12,19 @@ const getAll = async (req, res) => {
             limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
         }
 
-        const result = await Pet.paginate(query, options)
+        const result = await Pet.paginate({}, {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname',
+            }
+        })
 
-        if (!result.docs || result.docs.length === 0) {
+        if (!result || result.docs === 0) {
             return res.status(404).json({
-                error: "There are no Service in the Database",
+                error: "There are no Pet in the Database",
             });
         }
         res.status(200).json(result);
@@ -61,16 +69,30 @@ const updatePet = async (req, res) => {
         res.status(500).json(err)
     }
 }
-
-const getPetByUserId = async (req, res) => {
+// route /pet/username/?name=
+// GET
+const getPetByUsername = async (req, res) => {
     try {
-        const { id } = req.params
-        const pet = await Pet.find({ userId: id })
-        res.status(200).json({
-            data: pet
-        })
+        const searchTerm = req.query.name || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        console.log(searchTerm)
+        // Find the user based on the provided username
+        const users = await User.find({ fullname: new RegExp(searchTerm, 'i') });
+
+        // Extract the user IDs from the found users
+        const userIds = users.map(user => user._id);
+
+        // Find pets where userId is in the list of found user IDs
+        const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, { page, limit });
+
+        // nếu cần thêm cả thông tin của user thì dùng câu lệnh bên dưới
+        // const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, { page, limit, populate: 'userId' });
+
+        res.json(petPaginateResult);
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -78,5 +100,5 @@ module.exports = {
     getAll,
     createPet,
     updatePet,
-    getPetByUserId,
+    getPetByUsername,
 }
