@@ -15,7 +15,7 @@ const getTotalOrderByDate = async (req, res) => {
             endDate = new Date(endDate);
         }
         const totalOrders = await Order.countDocuments({
-            created_at: { $gte: new Date(startDate), $lte: new Date(endDate) },
+            createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
         });
         res.status(200).json(totalOrders)
     } catch (error) {
@@ -39,7 +39,7 @@ const getTotalRevenueByDate = async (req, res) => {
         const totalRevenue = await Order.aggregate([
             {
                 $match: {
-                    created_at: { $gte: new Date(startDate), $lte: new Date(endDate) },
+                    createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
                 },
             },
             {
@@ -69,9 +69,9 @@ const getTotalCustomerByDate = async (req, res) => {
             endDate = new Date(endDate);
         }
         const totalCustomers = await Order.distinct('userId', {
-            created_at: { $gte: new Date(startDate), $lte: new Date(endDate) },
+            createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
         });
-        res.status(200).json(totalCustomers)
+        res.status(200).json(totalCustomers.length)
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -104,7 +104,7 @@ const getTotalProductsSoldByDate = async (req, res) => {
             },
             {
                 $match: {
-                    'order.created_at': { $gte: new Date(startDate), $lte: new Date(endDate) },
+                    'order.createdAt': { $gte: new Date(startDate), $lte: new Date(endDate) },
                 },
             },
             {
@@ -131,7 +131,7 @@ const getRevenueStatistics = async (req, res) => {
                         $gte: new Date(`${currentYear}-01-01`),
                         $lte: new Date(`${currentYear}-12-31`),
                     },
-                    status: 'completed', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
+                    status: 'Ordered', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
                 },
             },
             {
