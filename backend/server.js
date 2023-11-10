@@ -37,6 +37,7 @@ app.use('/bookingDetail', require('./routes/bookingDetailRoutes'))
 app.use('/cartService', require('./routes/cartServiceRoutes'))
 app.use('/cartProduct', require('./routes/cartProductRoutes'))
 app.use('/dashboard', require('./routes/dashBoardRoutes'))
+app.use('/feedback', require('./routes/feedbackRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)

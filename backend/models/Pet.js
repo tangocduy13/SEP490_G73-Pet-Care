@@ -16,7 +16,11 @@ const petSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    category: String,
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+    },
     petImage: String,
 })
 

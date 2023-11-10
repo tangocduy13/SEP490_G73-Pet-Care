@@ -1,20 +1,23 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 
 const feedbackSchema = new mongoose.Schema({
-    bookingId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Booking",
-        required: true
+        ref: "User",
     },
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Service",
-        required: true,
     },
-    quantity: {
-        type: Number,
-        default: 1,
-    }
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+    },
+    comment: String,
+    star: Number,
+    image: String,
 })
 
-module.exports = mongoose.exports('Feedback', feedbackSchema)
+feedbackSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('Feedback', feedbackSchema)
