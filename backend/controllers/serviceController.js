@@ -1,18 +1,21 @@
 const Service = require('../models/Service')
 const Category = require('../models/Category')
+const mongoose = require('mongoose')
 
 // route: "/service"
 // method: GET
 const getAll = async (req, res) => {
     try {
-        const { sortPrice, page, limit, serviceName } = req.query
-
+        const { sortPrice, page, limit, categoryId } = req.query
+        console.log(categoryId)
         const query = {}
-
+        if (categoryId) {
+            query.categoryId = categoryId || ''
+        }
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
-            query: { serviceName: { $regex: serviceName, $options: 'i' } } // Apply the "like" query
+            query: query
         }
         if (sortPrice === 'asc') {
             options.sort = { price: 1 } // sắp xếp giá theo giá tăng dần
