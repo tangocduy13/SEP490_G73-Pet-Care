@@ -76,7 +76,7 @@ const getPetByUsername = async (req, res) => {
         const searchTerm = req.query.name || '';
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        console.log(searchTerm)
+
         // Find the user based on the provided username
         const users = await User.find({ fullname: new RegExp(searchTerm, 'i') });
 
@@ -84,10 +84,15 @@ const getPetByUsername = async (req, res) => {
         const userIds = users.map(user => user._id);
 
         // Find pets where userId is in the list of found user IDs
-        const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, { page, limit });
+        // const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, { page, limit });
 
         // nếu cần thêm cả thông tin của user thì dùng câu lệnh bên dưới
-        // const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, { page, limit, populate: 'userId' });
+        const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, {
+            page, limit, populate: {
+                path: 'userId',
+                select: 'fullname',
+            }
+        });
 
         res.json(petPaginateResult);
     } catch (error) {
