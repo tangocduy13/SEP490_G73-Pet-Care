@@ -28,8 +28,8 @@ const getAll = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { categoryId, quantity, price, description, productImage } = req.body;
-        const productName = 'product'
+        const { categoryId, productName, quantity, price, description, productImage } = req.body;
+
         const product = await Product.create({
             categoryId,
             productName,

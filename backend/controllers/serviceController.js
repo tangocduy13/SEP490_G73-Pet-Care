@@ -39,8 +39,7 @@ const getAll = async (req, res) => {
 // method: POST
 const createService = async (req, res) => {
     try {
-        const { status, description, price, categoryId, serviceImage } = req.body
-        const serviceName = 'service'
+        const { serviceName, status, description, price, categoryId, serviceImage } = req.body
         const service = await Service.create({ serviceName, status, description, price, categoryId, serviceImage })
         if (!service) return res.status(500).json({
             error: "Create fail"
@@ -83,22 +82,7 @@ const updateService = async (req, res) => {
         res.status(500).json(err)
     }
 }
-// route: "/service/find"
-// method: GET
-const findServiceByCateId = async (req, res) => {
-    try {
-        const { id } = req.params
-        const services = await Service.find({ categoryId: id })
-        if (!services) {
-            res.json(404).json({
-                error: "Service not found"
-            })
-        }
-        res.status(201).json(services)
-    } catch (err) {
-        console.log(err)
-    }
-}
+
 // route: "/service"
 // method: DELETE
 const deleteById = async (req, res) => {
@@ -131,5 +115,4 @@ module.exports = {
     updateService,
     deleteMany,
     deleteById,
-    findServiceByCateId
 }

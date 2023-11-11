@@ -4,13 +4,13 @@ const jwt = require('jsonwebtoken');
 
 const getProductFeedback = async (req, res) => {
     try {
-        const { productIdid, star, page, limit } = req.query;
+        const { productId, star, page, limit } = req.query;
 
         const query = {};
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
-            query: { id: parseInt(productIdid) }
+            query: { id: parseInt(productId) }
         }
 
         const result = await Feedback.paginate(query, options)

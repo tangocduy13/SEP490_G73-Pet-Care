@@ -4,18 +4,32 @@ const Category = require('../models/Category')
 // GET
 const getAll = async (req, res) => {
     try {
-        const categories = await Category.find()
-        if (!categories.length) return res.status(404).json({
-            error: "Category not found"
-        })
-        res.status(200).json(categories)
+        const { page, limit, categoryName } = req.query;
+
+        const query = categoryName ? { categoryName: { $regex: new RegExp(categoryName, 'i') } } : {};
+
+        const options = {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+        };
+
+        const categories = await Category.paginate(query, options);
+
+        if (!categories.docs.length) {
+            return res.status(404).json({
+                error: "Categories not found"
+            });
+        }
+
+        res.status(200).json(categories);
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(500).json({
             error: err
-        })
+        });
     }
-}
+};
+
 const createCategory = async (req, res) => {
     try {
         const { categoryName, feature } = req.body
