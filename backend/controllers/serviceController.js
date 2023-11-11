@@ -7,7 +7,6 @@ const mongoose = require('mongoose')
 const getAll = async (req, res) => {
     try {
         const { sortPrice, page, limit, categoryId } = req.query
-        console.log(categoryId)
         const query = {}
         if (categoryId) {
             query.categoryId = categoryId || ''
@@ -40,7 +39,8 @@ const getAll = async (req, res) => {
 // method: POST
 const createService = async (req, res) => {
     try {
-        const { serviceName, status, description, price, categoryId, serviceImage } = req.body
+        const { status, description, price, categoryId, serviceImage } = req.body
+        const serviceName = 'service'
         const service = await Service.create({ serviceName, status, description, price, categoryId, serviceImage })
         if (!service) return res.status(500).json({
             error: "Create fail"
