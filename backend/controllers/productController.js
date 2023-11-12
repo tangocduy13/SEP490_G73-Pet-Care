@@ -14,7 +14,7 @@ const getAll = async (req, res) => {
         const result = await Product.paginate(query, options);
 
         if (!result.docs || result.docs.length === 0) {
-            return res.status(404).json({
+            return res.json({
                 error: "There are no Product in the Database",
             });
         }
