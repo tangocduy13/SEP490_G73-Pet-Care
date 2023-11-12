@@ -2,8 +2,9 @@ const Product = require("../models/Product");
 
 const getAll = async (req, res) => {
     try {
-        const { page, limit } = req.query;
-        const query = {};
+        const { page, limit, product } = req.query;
+
+        const query = product ? { productName: { $regex: new RegExp(product, 'i') } } : {};
 
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1

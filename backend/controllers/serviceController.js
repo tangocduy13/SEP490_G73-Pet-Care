@@ -6,10 +6,13 @@ const mongoose = require('mongoose')
 // method: GET
 const getAll = async (req, res) => {
     try {
-        const { sortPrice, page, limit, categoryId } = req.query
+        const { sortPrice, page, limit, categoryId, service } = req.query
         const query = {}
         if (categoryId) {
             query.categoryId = categoryId || ''
+        }
+        if (service) {
+            query.serviceName = { $regex: new RegExp(service, 'i') };
         }
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
