@@ -157,8 +157,11 @@ const forgotPassword = async (req, res) => {
 
         const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-        mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+        user.verifyCode = verifyCode
+        user.save()
 
+        mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+        res.json({ message: "Check your email to get verify code" })
     } catch (error) {
         console.log(error)
         res.json(error)
@@ -176,6 +179,7 @@ const verify = async (req, res) => {
         if (code === user.verifyCode) {
             // xóa verify code cũ sau khi verify thành công
             user.verifyCode = ''
+            user.status = 'active'
             user.save()
             res.json({ message: "Ok" })
         }
@@ -186,7 +190,7 @@ const verify = async (req, res) => {
     }
 }
 
-const resetPassword = async (req, res) => {
+const newPassword = async (req, res) => {
     const { email, password } = req.body
     try {
         const user = await User.findOne({ email: email })
@@ -207,6 +211,6 @@ module.exports = {
     logout,
     getProfile,
     forgotPassword,
-    resetPassword,
+    newPassword,
     verify,
 }
