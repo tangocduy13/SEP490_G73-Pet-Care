@@ -25,11 +25,9 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    status: {
-        type: Boolean,
-        default: true,
-    },
-    userImage: String
+    status: String, // active incative verifying
+    userImage: String,
+    verifyCode: String,
 })
 
 userSchema.plugin(mongoosePaginate)

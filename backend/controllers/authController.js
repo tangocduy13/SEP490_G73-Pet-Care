@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const Role = require('../models/Role')
 const emailValidator = require('email-validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -25,6 +24,12 @@ const login = async (req, res) => {
             return res.json({
                 error: 'Email not found'
             })
+        // check email đã verify hay chưa
+        if (!user.status === "verifying") {
+            return res.json({
+                error: 'Unverified'
+            })
+        }
         const matchPwd = await bcrypt.compare(password, user.password)
         if (!matchPwd)
             return res.json({
@@ -55,7 +60,9 @@ const login = async (req, res) => {
 // method POST
 const register = async (req, res) => {
     try {
-        const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
+        const { fullname, email, password, role, phone, address, gender, userImage } = req.body
+        // khi vừa đăng ký mặc định tài khoản là 'verifying'
+        const status = 'verifying'
         // check value valid
         if (!fullname || !email || !password) {
             res.json({
@@ -75,16 +82,16 @@ const register = async (req, res) => {
                 error: "Email was taken"
             })
         }
-
+        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
         const hashPassword = await bcrypt.hash(password, 10)
 
-        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
+        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage, verifyCode })
         if (!user) {
             res.json({
-                error: "Server error! Please try again"
+                error: "Internal server error"
             })
         }
-        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+
         mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
         res.status(201).json({
             message: "Register successful",
@@ -140,10 +147,66 @@ const getProfile = async (req, res) => {
     }
 }
 
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    try {
+        const user = await User.findOne({ email: email })
+        if (!user) {
+            res.json("Email doesn't exist")
+        }
+
+        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+
+        mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
+}
+// verify code sau khi đăng ký và reset mật khẩu
+const verify = async (req, res) => {
+    const { email, code } = req.body
+
+    try {
+        const user = await User.findOne({ email: email })
+
+        if (!user) res.json("User Not Exists!")
+
+        if (code === user.verifyCode) {
+            // xóa verify code cũ sau khi verify thành công
+            user.verifyCode = ''
+            user.save()
+            res.json({ message: "Ok" })
+        }
+        res.json({ error: "Fail" })
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Fail" })
+    }
+}
+
+const resetPassword = async (req, res) => {
+    const { email, password } = req.body
+    try {
+        const user = await User.findOne({ email: email })
+        user.password = await bcrypt.hash(password, 10)
+        const docs = user.save()
+        if (docs)
+            res.json({ message: "Change password successfull" })
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Internal server error" })
+    }
+}
+
 module.exports = {
     login,
     register,
     changePassword,
     logout,
-    getProfile
+    getProfile,
+    forgotPassword,
+    resetPassword,
+    verify,
 }
