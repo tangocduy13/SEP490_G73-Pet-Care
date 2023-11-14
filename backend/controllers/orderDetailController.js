@@ -3,11 +3,7 @@ const OrderDetail = require('../models/OrderDetail');
 const getOrderDetailByOrderId = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const orderDetails = await OrderDetail.find({ orderId }).populate({
-            path: 'productId',
-            model: 'Product',
-            select: 'productName quantity productImage'
-          });
+        const orderDetails = await OrderDetail.find({ orderId }).populate('productId');
           if (!orderDetails) {
             return res.status(404).json({ 
                 message: 'OrderDetail not found!' 
