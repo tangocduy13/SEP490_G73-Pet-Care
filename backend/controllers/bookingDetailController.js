@@ -3,11 +3,7 @@ const BookingDetail = require('../models/BookingDetail');
 const getBookingDetailByBookingId = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
-        const bookingDetails = await BookingDetail.find({ bookingId }).populate({
-            path: 'serviceId',
-            model: 'Service',
-            select: 'serviceName description price title type serviceImage',
-        });
+        const bookingDetails = await BookingDetail.find({ bookingId })?.populate('serviceId').populate('petId');
         if (!bookingDetails) {
             return res.status(404).json({ 
                 message: 'BookingDetail not found!' 

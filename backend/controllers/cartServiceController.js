@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken');
 const viewCart = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const cartItems = await CartService.find({ userId });
+        const cartItems = await CartService.find({ userId }).populate('petId').populate('serviceId');
         res.status(200).json(cartItems);
     } catch (err) {
         console.error(err);
@@ -24,7 +24,7 @@ const addToCart = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
         // const token = req.cookies.token;
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
@@ -65,7 +65,7 @@ const checkout = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
         // const token = req.cookies.token;
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
