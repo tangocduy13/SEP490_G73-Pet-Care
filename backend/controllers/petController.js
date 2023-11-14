@@ -8,8 +8,8 @@ const getAll = async (req, res) => {
         const query = {}
 
         const options = {
-            page: parseInt(page) || 1, // mặc định trang là 1
-            limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
         }
 
         const result = await Pet.paginate({}, {
@@ -69,7 +69,7 @@ const updatePet = async (req, res) => {
         res.status(500).json(err)
     }
 }
-// route /pet/username/?name=
+// route /pet/username?name=
 // GET
 const getPetByUsername = async (req, res) => {
     try {
@@ -100,10 +100,31 @@ const getPetByUsername = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+// route /pet/userid?
+// GET
+const getPetByUserId = async (req, res) => {
+    try {
+        const userId = req.query.id
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+
+        // Find pet by user id
+        const pets = await Pet.paginate({ userId: userId }, {
+            page, limit, populate: {
+                path: 'userId'
+            }
+        })
+        res.json(pets)
+    } catch (error) {
+        console.log(error)
+        res.json("Internal server error")
+    }
+}
 
 module.exports = {
     getAll,
     createPet,
     updatePet,
     getPetByUsername,
+    getPetByUserId,
 }

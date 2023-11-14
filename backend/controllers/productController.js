@@ -2,10 +2,15 @@ const Product = require("../models/Product");
 
 const getAll = async (req, res) => {
     try {
-        const { page, limit, product } = req.query;
-
-        const query = product ? { productName: { $regex: new RegExp(product, 'i') } } : {};
-
+        const { page, limit, product, categoryId } = req.query;
+        const query = {}
+        if (categoryId) {
+            query.categoryId = categoryId || ''
+        }
+        // tìm kiếm tên product theo tên
+        if (product) {
+            query.productName = { $regex: new RegExp(product, 'i') }
+        }
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10,
