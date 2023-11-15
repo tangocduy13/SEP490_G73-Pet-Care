@@ -4,11 +4,11 @@ const jwt = require('jsonwebtoken');
 
 const getProductFeedback = async (req, res) => {
     try {
-        const { userId, star, page, limit, } = req.query;
-        console.log(userId)
+        const { productId, star, page, limit, } = req.query;
+        console.log(productId)
         const query = {};
-        if (userId) {
-            query.userId = userId
+        if (productId) {
+            query.productId = productId
         }
 
         const options = {
