@@ -5,15 +5,20 @@ const jwt = require('jsonwebtoken');
 const getProductFeedback = async (req, res) => {
     try {
         const { productId, star, page, limit } = req.query;
-
+        console.log(productId)
         const query = {};
+        if (productId) {
+            query.productId = productId
+        }
+
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
-            query: { id: parseInt(productId) }
+            star: parseInt(star) || 5,
+            populate: 'productId'
         }
 
-        const result = await Feedback.paginate(query, options)
+        const result = await Feedback.paginate(query, options);
         if (!result.docs || result.docs.length === 0) {
             return res.status(404).json({
                 error: 'No feedback was made yet',
