@@ -4,18 +4,18 @@ const jwt = require('jsonwebtoken');
 
 const getProductFeedback = async (req, res) => {
     try {
-        const { productId, star, page, limit } = req.query;
-        console.log(productId)
+        const { userId, star, page, limit, } = req.query;
+        console.log(userId)
         const query = {};
-        if (productId) {
-            query.productId = productId
+        if (userId) {
+            query.userId = userId
         }
 
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
             star: parseInt(star) || 5,
-            populate: 'productId'
+            populate: 'userId'
         }
 
         const result = await Feedback.paginate(query, options);
@@ -34,7 +34,7 @@ const getProductFeedback = async (req, res) => {
 const feedbackProduct = async (req, res) => {
     try {
         // lấy user id
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
 
