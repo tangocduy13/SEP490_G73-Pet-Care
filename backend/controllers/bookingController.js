@@ -23,6 +23,7 @@ const getAllBooking = async (req, res) => {
             sort: { createdAt: -1 }, // Sắp xếp mặc định theo thời gian tạo giảm dần
             page: parseInt(page) || 1, // Trang mặc định là 1
             limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 10
+            populate: 'userId'
         };
         if (sort === 'asc') {
             options.sort = { totalPrice: 1 }; // Sắp xếp tăng dần theo totalPrice
