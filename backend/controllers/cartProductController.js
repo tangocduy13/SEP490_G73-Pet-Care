@@ -27,7 +27,7 @@ const addToCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const productId = req.params.productId;
+        const productId = req.body.productId;
        
         const product = await Product.findById(productId);
 
