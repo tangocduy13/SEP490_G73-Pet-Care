@@ -10,10 +10,11 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body
 
-        if (!email || !password)
+        if (!email || !password) {
             return res.json({
                 error: 'Email and password can not be empty'
             })
+        }
         if (!emailValidator.validate(email)) {
             return res.json({
                 error: 'Wrong email format'
@@ -25,32 +26,33 @@ const login = async (req, res) => {
                 error: 'Email not found'
             })
         // check email đã verify hay chưa
-        if (!user.status === "verifying") {
+        else if (user.status === "verifying") {
             return res.json({
                 error: 'Unverified'
             })
-        }
-        const matchPwd = await bcrypt.compare(password, user.password)
-        if (!matchPwd)
-            return res.json({
-                error: 'Wrong password'
-            })
+        } else {
+            const matchPwd = await bcrypt.compare(password, user.password)
+            if (!matchPwd)
+                return res.json({
+                    error: 'Wrong password'
+                })
 
-        const token = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            process.env.SECRET_KEY,
-            {
-                expiresIn: '24h'
-            }
-        )
-        res.cookie('token', token).json({
-            message: "Login successful",
-            token: token
-        })
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                },
+                process.env.SECRET_KEY,
+                {
+                    expiresIn: '24h'
+                }
+            )
+            res.cookie('token', token).json({
+                message: "Login successful",
+                token: token
+            })
+        }
     } catch (err) {
         console.log(err)
     }
@@ -61,45 +63,49 @@ const login = async (req, res) => {
 const register = async (req, res) => {
     try {
         const { fullname, email, password, role, phone, address, gender, userImage } = req.body
+
+
         // khi vừa đăng ký mặc định tài khoản là 'verifying'
         const status = 'verifying'
-        // check value valid
-        if (!fullname || !email || !password) {
-            res.json({
-                error: "fullname, email, password are required",
-            })
-        }
-        //check validate email
-        if (!emailValidator.validate(email)) {
-            return res.json({
-                error: "Wrong email format"
-            })
-        }
-        // check duplicate email
         const duplicate = await User.findOne({ email: email })
         if (duplicate) {
             res.json({
                 error: "Email was taken"
             })
         }
-        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-        const hashPassword = await bcrypt.hash(password, 10)
-
-        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage, verifyCode })
-        if (!user) {
+        // check value valid
+        else if (!fullname || !email || !password) {
             res.json({
-                error: "Internal server error"
+                error: "fullname, email, password must be required",
             })
         }
+        //check validate email
+        else if (!emailValidator.validate(email)) {
+            return res.json({
+                error: "Wrong email format"
+            })
+        }
+        // check duplicate email
+        // 
+        else {
+            const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+            const hashPassword = await bcrypt.hash(password, 10)
 
-        mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
-        res.status(201).json({
-            message: "Register successful",
-            User: user,
-        })
+            const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage, verifyCode })
+            if (!user) {
+                res.json({
+                    error: "Internal server error"
+                })
+            }
 
+            mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+            res.status(201).json({
+                message: "Register successful",
+                User: user,
+            })
+        }
     } catch (err) {
-        console.log(err)
+        console.log(102, err)
         res.status(500).json({
             error: err
         })
