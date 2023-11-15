@@ -8,7 +8,7 @@ router.post('/login', authController.login)
     .put('/changePassword', authController.changePassword)
     .get('/profile', authController.getProfile)
     .post('/forgot-password', authController.forgotPassword)
-    .get('/verify', authController.verify)
+    .post('/verify', authController.verify)
     .post('/new-password', authController.newPassword)
 
 module.exports = router
