@@ -61,6 +61,27 @@ const addToCart = async (req, res) => {
     }
 }
 
+const removeFromCart = async (req, res) => {
+    // Lấy thông tin người dùng từ token JWT
+    // const token = req.cookies.token;
+    const token = req.headers.authorization;
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const userId = decoded.id;
+    const serviceId = req.params.serviceId;
+    const service = await CartService.findOne({ serviceId });
+    if (!service) {
+        return res.status(404).json({ message: 'Service: ' + serviceId + ' not found.' });
+    }
+    try {
+        // Xóa dịch vụ khỏi giỏ hàng của người dùng
+        await CartService.findOneAndRemove({ userId, serviceId });
+        res.status(200).json({ message: 'The service has been removed from cart' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while removing the service from cart' });
+    }
+}
+
 const checkout = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
@@ -123,6 +144,7 @@ const checkout = async (req, res) => {
 
 module.exports = {
     addToCart,
+    removeFromCart,
     viewCart,
     checkout
 }

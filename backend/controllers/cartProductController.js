@@ -9,8 +9,8 @@ const viewCart = async (req, res) => {
         // Lấy thông tin người dùng từ token JWT
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
-
+        const userId = decoded.id;
+        
         const cartItems = await CartProduct.find({ userId }).populate('productId');
         res.status(200).json(cartItems);
     } catch (err) {
@@ -25,10 +25,10 @@ const addToCart = async (req, res) => {
         // const token = req.cookies.token;
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
+        const userId = decoded.id;
 
         const productId = req.body.productId;
-       
+
         const product = await Product.findById(productId);
 
         if (!product) {
@@ -37,8 +37,8 @@ const addToCart = async (req, res) => {
             });
         }
 
-        let cartProduct = await CartProduct.findOne({ userId, productId});
-        
+        let cartProduct = await CartProduct.findOne({ userId, productId });
+
         if (cartProduct) {
             cartProduct.quantity += 1;
         } else {
@@ -59,13 +59,34 @@ const addToCart = async (req, res) => {
     }
 }
 
+const removeFromCart = async (req, res) => {
+    // Lấy thông tin người dùng từ token JWT
+    // const token = req.cookies.token;
+    const token = req.headers.authorization;
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const userId = decoded.id;
+    const productId = req.params.productId;
+    const product = await CartProduct.findOne({ productId });
+    if (!product) {
+        return res.status(404).json({ message: 'Product: ' + productId + ' not found.' });
+    }
+    try {
+        // Xóa sản phẩm khỏi giỏ hàng của người dùng
+        await CartProduct.findOneAndRemove({ userId, productId });
+        res.status(200).json({ message: 'The product has been removed from cart' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while removing the product from cart' });
+    }
+}
+
 const checkout = async (req, res) => {
     try {
         // Lấy thông tin người dùng từ token JWT
         // const token = req.cookies.token;
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
+        const userId = decoded.id;
 
         const cartItems = await CartProduct.find({ userId });
 
@@ -77,11 +98,11 @@ const checkout = async (req, res) => {
         let total = 0;
         const order = new Order({
             userId: userId,
-            totalPrice: total, 
+            totalPrice: total,
             status: 'Ordered',
         });
         const createdOrder = await order.save();
-        
+
         // Create booking details for each cart item
         for (const cartItem of cartItems) {
 
@@ -114,12 +135,13 @@ const checkout = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({err, message: 'Can not checkout'});
+        res.status(500).json({ err, message: 'Can not checkout' });
     }
 }
 
 module.exports = {
     addToCart,
+    removeFromCart,
     viewCart,
     checkout
 }
