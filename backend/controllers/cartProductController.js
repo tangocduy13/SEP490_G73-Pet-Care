@@ -94,12 +94,15 @@ const checkout = async (req, res) => {
             return res.status(400).json({ message: 'Cart is empty' });
         }
 
-        // Create a new booking record
+        // Create a new order record
         let total = 0;
         const order = new Order({
             userId: userId,
             totalPrice: total,
             status: 'Ordered',
+            recipientName: req.body.recipientName,
+            recipientPhoneNumber: req.body.recipientPhoneNumber,
+            deliveryAddress: req.body.deliveryAddress,
         });
         const createdOrder = await order.save();
 

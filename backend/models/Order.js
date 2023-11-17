@@ -13,6 +13,18 @@ const orderSchema = new mongoose.Schema(
             default: 1,
         },
         status: String,
+        recipientName: {
+            type: String,
+            required: true,
+        },
+        recipientPhoneNumber: {
+            type: String,
+            required: true,
+        },
+        deliveryAddress: {
+            type: String,
+            required: true,
+        },
     },
     {
         timestamps: true
