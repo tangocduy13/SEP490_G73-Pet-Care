@@ -28,6 +28,7 @@ const addToCart = async (req, res) => {
         const userId = decoded.id;
 
         const productId = req.body.productId;
+        const quantity = req.body.quantity;
 
         const product = await Product.findById(productId);
 
@@ -40,12 +41,12 @@ const addToCart = async (req, res) => {
         let cartProduct = await CartProduct.findOne({ userId, productId });
 
         if (cartProduct) {
-            cartProduct.quantity += 1;
+            cartProduct.quantity += quantity;
         } else {
             cartProduct = new CartProduct({
                 userId: userId,
                 productId: productId,
-                quantity: 1
+                quantity: quantity
             });
         }
         const result = await cartProduct.save();

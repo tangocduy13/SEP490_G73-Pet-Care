@@ -28,7 +28,7 @@ const addToCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id; 
 
-        const { serviceId, petId } = req.body;
+        const { serviceId, petId, quantity } = req.body;
        
         const service = await Service.findById(serviceId);
 
@@ -41,13 +41,13 @@ const addToCart = async (req, res) => {
         let cartService = await CartService.findOne({ userId, serviceId, petId });
         
         if (cartService) {
-            cartService.quantity += 1;
+            cartService.quantity += quantity;
         } else {
             cartService = new CartService({
                 userId,
                 petId,
                 serviceId,
-                quantity: 1
+                quantity: quantity
             });
         }
         const result = await cartService.save();
