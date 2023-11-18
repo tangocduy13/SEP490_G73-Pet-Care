@@ -32,7 +32,20 @@ const getAll = async (req, res) => {
                 error: "There are no Service in the Database",
             });
         }
-        res.status(200).json(result);
+        // Map each document to include the discountedPrice
+        const servicesWithDiscountedPrice = result.docs.map(service => {
+            return {
+                ...service.toObject(),
+                discountedPrice: service.discountedPrice // Include discountedPrice in each service
+            };
+        });
+
+        // Include services with discountedPrice in the response
+        const response = {
+            ...result,
+            docs: servicesWithDiscountedPrice
+        };
+        res.status(200).json(response);
     } catch (err) {
         console.log(err)
         res.status(400).json(err)
@@ -60,7 +73,7 @@ const createService = async (req, res) => {
 // method: PATCH
 const updateService = async (req, res) => {
     try {
-        const { id, serviceName, status, description, price, title, type, categoryId, serviceImage } = req.body
+        const { id, serviceName, status, description, price, discount, saleStartTime, saleEndTime, title, type, categoryId, serviceImage } = req.body
         const service = await Service.findById(id)
         if (!service) return res.status(404).json({
             error: "Service not found"
@@ -69,16 +82,20 @@ const updateService = async (req, res) => {
         service.status = status
         service.description = description
         service.price = price
+        service.discount = discount
+        service.saleStartTime = saleStartTime
+        service.saleEndTime = saleEndTime
         service.title = title
         service.type = type
         service.categoryId = categoryId
         service.serviceImage = serviceImage
-        const result = await service.save()
-        if (!result) return res.status(400).json({
-            error: "Update fail"
-        })
+
+        const updatedService = await service.save()
+        const serviceWithDiscountedPrice = updatedService.toObject({ virtuals: true });
+
         res.status(201).json({
-            message: `Updated service ${service.serviceName}`
+            message: `Updated service ${service.serviceName}`,
+            service: serviceWithDiscountedPrice
         })
     } catch (err) {
         console.log(err)

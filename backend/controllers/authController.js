@@ -10,16 +10,6 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body
 
-        if (!email || !password) {
-            return res.json({
-                error: 'Email and password can not be empty'
-            })
-        }
-        if (!emailValidator.validate(email)) {
-            return res.json({
-                error: 'Wrong email format'
-            })
-        }
         const user = await User.findOne({ email: email })
         if (!user)
             return res.json({

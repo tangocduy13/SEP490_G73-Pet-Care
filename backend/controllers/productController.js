@@ -23,6 +23,22 @@ const getAll = async (req, res) => {
                 error: "There are no Product in the Database",
             });
         }
+
+        // Map each document to include the discountedPrice
+        const productsWithDiscountedPrice = result.docs.map(product => {
+            return {
+                ...product.toObject(),
+                discountedPrice: product.discountedPrice // Include discountedPrice in each product
+            };
+        });
+
+        // Include products with discountedPrice in the response
+        const response = {
+            ...result,
+            docs: productsWithDiscountedPrice
+        };
+        res.status(200).json(response);
+
         res.status(200).json(result);
     } catch (err) {
         console.log(err);
@@ -60,7 +76,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { id, categoryId, productName, quantity, price, description, productImage } = req.body;
+        const { id, categoryId, productName, quantity, price, discount, saleStartTime, saleEndTime, description, productImage } = req.body;
         if (!productName)
             return res.status(400).json({
                 error: "Product name is required",
@@ -71,11 +87,18 @@ const updateProduct = async (req, res) => {
         product.productName = productName;
         product.quantity = quantity;
         product.price = price;
+        product.discount = discount
+        product.saleStartTime = saleStartTime
+        product.saleEndTime = saleEndTime
         product.description = description;
         product.productImage = productImage;
-        await product.save();
+
+        const updateProduct = await product.save()
+        const productWithDiscountedPrice = updateProduct.toObject({ virtuals: true });
+
         res.status(201).json({
             message: "Update successful",
+            product: productWithDiscountedPrice,
         });
     } catch (err) {
         console.log(err);
