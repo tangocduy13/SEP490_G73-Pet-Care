@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const getProductFeedback = async (req, res) => {
     try {
-        const { productId, star, page, limit, } = req.query;
-        console.log(productId)
+        const { productId, star, page, limit, sort } = req.query;
+
         const query = {};
         if (productId) {
             query.productId = productId
@@ -14,11 +14,17 @@ const getProductFeedback = async (req, res) => {
             query.star = parseInt(star)
         }
         const options = {
+            sort: { createdAt: -1 }, // sắp xếp mặc định theo thời gian giảm dần
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
             populate: 'userId'
         }
-
+        if (sort === 'acs') {
+            options.sort = 1
+        }
+        if (sort === 'desc') {
+            options.sort = -1
+        }
         const result = await Feedback.paginate(query, options);
         if (!result.docs || result.docs.length === 0) {
             return res.status(404).json({

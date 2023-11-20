@@ -37,8 +37,8 @@ const getAll = async (req, res) => {
 
 const createPet = async (req, res) => {
     try {
-        const { userId, petName, rank, status, categoryId, petImage } = req.body
-        const pet = await Pet.create({ userId, petName, rank, status, categoryId, petImage })
+        const { userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
+        const pet = await Pet.create({ userId, petName, rank, status, categoryId, color, weight, height, petImage })
         res.status(201).json({
             message: "Created successful",
             pet: pet
@@ -51,13 +51,16 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
     try {
-        const { id, userId, petName, rank, status, categoryId, petImage } = req.body
+        const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
         const pet = await Pet.findById(id)
         pet.userId = userId
         pet.petName = petName
         pet.rank = rank
         pet.status = status
         pet.categoryId = categoryId
+        pet.color = color
+        pet.weight = weight
+        pet.height = height
         pet.petImage = petImage
 
         await pet.save()
@@ -69,6 +72,22 @@ const updatePet = async (req, res) => {
         res.status(500).json(err)
     }
 }
+
+const updateStatus = async (req, res) => {
+    try {
+        const { id, status } = req.body
+        const updatePet = await Pet.findOneAndUpdate(
+            { _id: id },
+            { $set: { status: status } },
+            { new: true }
+        )
+        res.json(updatePet)
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Internal Server Error" })
+    }
+}
+
 // route /pet/username?name=
 // GET
 const getPetByUsername = async (req, res) => {
@@ -127,4 +146,5 @@ module.exports = {
     updatePet,
     getPetByUsername,
     getPetByUserId,
+    updateStatus,
 }

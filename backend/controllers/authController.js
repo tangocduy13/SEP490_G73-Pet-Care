@@ -9,7 +9,16 @@ const mailer = require('../utils/mailer')
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
-
+        if (!email || !password) {
+            res.json({
+                error: "Email and password can not be empty"
+            })
+        }
+        if (!emailValidator.validate(email)) {
+            res.json({
+                error: "Wrong email format"
+            })
+        }
         const user = await User.findOne({ email: email })
         if (!user)
             return res.json({
@@ -111,16 +120,17 @@ const changePassword = async (req, res) => {
     if (!result) return res.json({
         error: "Wrong old password"
     })
-    if (!(newPassword === rePassword)) {
+    else if (!(newPassword === rePassword)) {
         res.json({
             error: "The New and Confirm passwords must match. Please re-type them."
         })
+    } else {
+        const hashPassword = await bcrypt.hash(newPassword, 10)
+        await user.updateOne({ password: hashPassword })
+        res.status(201).json({
+            message: `User: ${user.fullname} change passwrod successfull`
+        })
     }
-    const hashPassword = await bcrypt.hash(newPassword, 10)
-    await user.updateOne({ password: hashPassword })
-    res.status(201).json({
-        message: `User: ${user.fullname} change passwrod successfull`
-    })
 }
 
 const logout = (req, res) => {

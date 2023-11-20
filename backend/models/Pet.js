@@ -14,13 +14,16 @@ const petSchema = new mongoose.Schema({
     },
     status: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true,
     },
+    color: String,
+    weight: Number,
+    height: Number,
     petImage: String,
 })
 

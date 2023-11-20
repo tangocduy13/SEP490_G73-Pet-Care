@@ -7,4 +7,5 @@ router.get('/', petController.getAll)
     .patch('/', petController.updatePet)
     .get('/username', petController.getPetByUsername)
     .get('/userid', petController.getPetByUserId)
+    .put('/updateStatus', petController.updateStatus)
 module.exports = router

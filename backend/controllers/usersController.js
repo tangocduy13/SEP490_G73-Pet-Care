@@ -115,7 +115,6 @@ const updateUser = async (req, res) => {
             })
         }
         user.fullname = fullname
-        user.password = password
         user.role = role
         user.phone = phone
         user.address = address
