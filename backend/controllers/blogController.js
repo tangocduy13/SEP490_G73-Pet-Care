@@ -1,26 +1,28 @@
 const Blog = require('../models/Blog');
 const path = require('path')
 
-const uploadBlogImage = (req, res) => {
+const uploadBlogImage = async (req, res) => {
     try {
-        const imagePath = path.join('image/blog', req.params.title, req.file.filename)
-        const imageUrl = `http//localhost:3500/${imagePath}`
-        // Save the image path in the 'image' field of the Blog model
-        console.log(imageUrl)
-        const { title, content, userId } = req.body
+        const { title, content, userId } = req.body;
+        const imagePath = req.file.path; // Path where the file is saved by multer
+        const originalFileName = req.file ? req.file.originalname : ''; // Get the original file name
+        const imageUrl = `http://localhost:3500/image/blog/${originalFileName}`
+        // tạm thời chỉ lấy được ảnh chưa lấy được dữ liệu title, content và userId
         const newBlog = new Blog({
             title,
             content,
             userId,
-            image: imagePath,
-        })
+            image: imageUrl,
+        });
 
-        newBlog.save()
-
-        res.json({ imageUrl })
+        const savedBlog = await newBlog.save();
+        res.status(201).json({
+            docs: savedBlog,
+            filename: originalFileName
+        });
     } catch (error) {
-        console.log(error)
-        res.json({ error: "Internal Server Error" })
+        console.error('Error creating blog:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
