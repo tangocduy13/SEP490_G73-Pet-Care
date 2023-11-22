@@ -58,36 +58,37 @@ const createUser = async (req, res) => {
         // check value valid
         if (!fullname || !email || !password) {
             res.status(500).json({
-                error: "fullname, email, password are required",
+                error: "fullname, email, password không được bỏ trống",
             })
         }
         //check validate email
-        if (!emailValidator.validate(email)) {
+        else if (!emailValidator.validate(email)) {
             return res.status(500).json({
-                error: "Wrong email format"
+                error: "Vui lòng nhập đúng email"
             })
         }
         // check duplicate email
         const duplicate = await User.findOne({ email: email })
         if (duplicate) {
             res.json({
-                error: "Email was taken"
+                error: "Email này đã được sử dụng"
             })
         }
+        else {
+            const hashPassword = await bcrypt.hash(password, 10)
 
-        const hashPassword = await bcrypt.hash(password, 10)
-
-        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
-        if (!user) {
-            res.status(500).json({
-                error: "Server error! Please try again"
-            })
+            const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
+            if (!user) {
+                res.status(500).json({
+                    error: "Server error! Please try again"
+                })
+            } else {
+                res.status(201).json({
+                    message: "Create successful",
+                    User: user,
+                })
+            }
         }
-
-        res.status(201).json({
-            message: "Create successful",
-            User: user,
-        })
 
     } catch (err) {
         console.log(err)
@@ -101,13 +102,8 @@ const createUser = async (req, res) => {
 // PATCH
 const updateUser = async (req, res) => {
     try {
-        const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
-        // check value valid
-        if (!fullname || !password) {
-            res.status(500).json({
-                error: "fullname, password are required",
-            })
-        }
+        const { fullname, email, role, phone, address, gender, status, userImage } = req.body
+
         const user = await User.findOne({ email: email })
         if (!user) {
             res.status(404).json({

@@ -14,7 +14,7 @@ const login = async (req, res) => {
                 error: "Email and password can not be empty"
             })
         }
-        if (!emailValidator.validate(email)) {
+        else if (!emailValidator.validate(email)) {
             res.json({
                 error: "Wrong email format"
             })
@@ -33,7 +33,7 @@ const login = async (req, res) => {
             const matchPwd = await bcrypt.compare(password, user.password)
             if (!matchPwd)
                 return res.json({
-                    error: 'Wrong password'
+                    error: 'Sai mật khẩu'
                 })
 
             const token = jwt.sign(
@@ -48,7 +48,7 @@ const login = async (req, res) => {
                 }
             )
             res.cookie('token', token).json({
-                message: "Login successful",
+                message: `Xin chào ${user.fullname}`,
                 token: token
             })
         }
@@ -69,19 +69,19 @@ const register = async (req, res) => {
         const duplicate = await User.findOne({ email: email })
         if (duplicate) {
             res.json({
-                error: "Email was taken"
+                error: "Email đã được sử dụng"
             })
         }
         // check value valid
         else if (!fullname || !email || !password) {
             res.json({
-                error: "fullname, email, password must be required",
+                error: "fullname, email, password không thể bỏ trống",
             })
         }
         //check validate email
         else if (!emailValidator.validate(email)) {
             return res.json({
-                error: "Wrong email format"
+                error: "Vui lòng nhập đúng email"
             })
         }
         // check duplicate email
@@ -95,13 +95,13 @@ const register = async (req, res) => {
                 res.json({
                     error: "Internal server error"
                 })
+            } else {
+                mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+                res.status(201).json({
+                    message: "Register successful",
+                    User: user,
+                })
             }
-
-            mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
-            res.status(201).json({
-                message: "Register successful",
-                User: user,
-            })
         }
     } catch (err) {
         console.log(102, err)
@@ -118,11 +118,11 @@ const changePassword = async (req, res) => {
     const user = await User.findById(id)
     const result = await bcrypt.compare(oldPassword, user.password)
     if (!result) return res.json({
-        error: "Wrong old password"
+        error: "Mật khẩu cũ không chính xác"
     })
     else if (!(newPassword === rePassword)) {
         res.json({
-            error: "The New and Confirm passwords must match. Please re-type them."
+            error: "Vui lòng nhập lại chính xác mật khẩu mới"
         })
     } else {
         const hashPassword = await bcrypt.hash(newPassword, 10)
@@ -136,8 +136,10 @@ const changePassword = async (req, res) => {
 const logout = (req, res) => {
     const token = req.cookies.token
     if (!token) return res.sendStatus(204) //No content
-    res.clearCookie('token')
-    res.json({ message: 'Cookie cleared' })
+    else {
+        res.clearCookie('token')
+        res.json({ message: 'Cookie cleared' })
+    }
 }
 
 const getProfile = async (req, res) => {
@@ -158,16 +160,16 @@ const forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ email: email })
         if (!user) {
-            res.json("Email doesn't exist")
+            res.json("Email không tồn tại")
+        } else {
+            const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+
+            user.verifyCode = verifyCode
+            user.save()
+
+            mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
+            res.status(200).json({ message: "Check your email to get verify code" })
         }
-
-        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-
-        user.verifyCode = verifyCode
-        user.save()
-
-        mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
-        res.json({ message: "Check your email to get verify code" })
     } catch (error) {
         console.log(error)
         res.json(error)
@@ -180,16 +182,18 @@ const verify = async (req, res) => {
     try {
         const user = await User.findOne({ email: email })
 
-        if (!user) res.json("User Not Exists!")
+        if (!user) {
+            res.json("Email này không tồn tại")
+        }
 
-        if (code === user.verifyCode) {
+        else if (code === user.verifyCode) {
             // xóa verify code cũ sau khi verify thành công
             user.verifyCode = ''
             user.status = 'active'
             user.save()
-            res.json({ message: "Ok" })
+            res.status(200).json({ message: "Xác thực thành công" })
         }
-        res.json({ error: "Fail" })
+        else res.json({ error: "Sai mã xác thực. Vui lòng kiểm tra lại" })
     } catch (error) {
         console.log(error)
         res.json({ error: "Fail" })
@@ -197,7 +201,7 @@ const verify = async (req, res) => {
 }
 
 const newPassword = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body // trong trường hợp FE đã check new password === confirm new password
     try {
         const user = await User.findOne({ email: email })
         user.password = await bcrypt.hash(password, 10)

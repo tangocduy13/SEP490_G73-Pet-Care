@@ -18,7 +18,6 @@ const uploadBlogImage = async (req, res) => {
         const savedBlog = await newBlog.save();
         res.status(201).json({
             docs: savedBlog,
-            filename: originalFileName
         });
     } catch (error) {
         console.error('Error creating blog:', error);
@@ -60,8 +59,7 @@ const getAllBlog = async (req, res) => {
         const blogs = await Blog.paginate(query, options)
         if (!blogs) {
             res.json({ error: "There are no blog in database" })
-        }
-        res.status(201).json(blogs)
+        } else res.status(201).json(blogs)
     } catch (error) {
         console.log(error)
         res.json({ error: "Internal Server Error" })
@@ -74,12 +72,15 @@ const updateOne = async (req, res) => {
         const { id } = req.params
         const blog = await Blog.findOne({ _id: id })
 
-        if (!blog) res.json({ error: "Blog not found" })
-        blog.title = title
-        blog.content = content
-        blog.image = image
-        const result = await blog.save()
-        if (result) res.json({ message: "Updated Blog" })
+        if (!blog) {
+            res.json({ error: "Blog not found" })
+        } else {
+            blog.title = title
+            blog.content = content
+            blog.image = image
+            const result = await blog.save()
+            if (result) res.json({ message: "Updated Blog" })
+        }
     } catch (error) {
         console.log(error)
         res.json({ error: "Internal Server Error" })
