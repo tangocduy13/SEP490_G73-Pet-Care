@@ -7,7 +7,7 @@ const uploadBlogImage = async (req, res) => {
         const imagePath = req.file.path; // Path where the file is saved by multer
         const originalFileName = req.file ? req.file.originalname : ''; // Get the original file name
         const imageUrl = `http://localhost:3500/image/blog/${originalFileName}`
-        // tạm thời chỉ lấy được ảnh chưa lấy được dữ liệu title, content và userId
+        // tạm thời chỉ lấy được ảnh chưa lấy được dữ liệu title, content và userId (code mới học)
         const newBlog = new Blog({
             title,
             content,
