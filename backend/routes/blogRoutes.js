@@ -19,5 +19,5 @@ router.post('/upload', upload.single('image'), blogController.uploadBlogImage)
     .get('/', blogController.getAllBlog)
     .patch('/:id', blogController.updateOne)
     .delete('/:id', blogController.deleteOne)
-
+    .get('/:id', blogController.getBlogById)
 module.exports = router;

@@ -86,7 +86,15 @@ const updateOne = async (req, res) => {
         res.json({ error: "Internal Server Error" })
     }
 }
-
+const getBlogById = async (req, res) => {
+    const { id } = req.params;
+    const blog = await Blog.findOne({ _id: id });
+    if (!Blog) {
+        res.status(404).json({ error: "Blog Not Found" })
+    } else {
+        res.status(200).json(blog)
+    }
+}
 const deleteOne = async (req, res) => {
     try {
         const { id } = req.params
@@ -104,4 +112,5 @@ module.exports = {
     getAllBlog,
     deleteOne,
     updateOne,
+    getBlogById,
 }
