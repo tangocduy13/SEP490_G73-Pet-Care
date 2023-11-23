@@ -1,26 +1,27 @@
 const Blog = require('../models/Blog');
 const path = require('path')
 
-const uploadBlogImage = (req, res) => {
+const uploadBlogImage = async (req, res) => {
     try {
-        const imagePath = path.join('image/blog', req.params.title, req.file.filename)
-        const imageUrl = `http//localhost:3500/${imagePath}`
-        // Save the image path in the 'image' field of the Blog model
-        console.log(imageUrl)
-        const { title, content, userId } = req.body
+        const { title, content, userId } = req.body;
+        const imagePath = req.file.path; // Path where the file is saved by multer
+        const originalFileName = req.file ? req.file.originalname : ''; // Get the original file name
+        const imageUrl = `http://localhost:3500/image/blog/${originalFileName}`
+        // tạm thời chỉ lấy được ảnh chưa lấy được dữ liệu title, content và userId (code mới học)
         const newBlog = new Blog({
             title,
             content,
             userId,
-            image: imagePath,
-        })
+            image: imageUrl,
+        });
 
-        newBlog.save()
-
-        res.json({ imageUrl })
+        const savedBlog = await newBlog.save();
+        res.status(201).json({
+            docs: savedBlog,
+        });
     } catch (error) {
-        console.log(error)
-        res.json({ error: "Internal Server Error" })
+        console.error('Error creating blog:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -58,8 +59,7 @@ const getAllBlog = async (req, res) => {
         const blogs = await Blog.paginate(query, options)
         if (!blogs) {
             res.json({ error: "There are no blog in database" })
-        }
-        res.status(201).json(blogs)
+        } else res.status(201).json(blogs)
     } catch (error) {
         console.log(error)
         res.json({ error: "Internal Server Error" })
@@ -72,18 +72,29 @@ const updateOne = async (req, res) => {
         const { id } = req.params
         const blog = await Blog.findOne({ _id: id })
 
-        if (!blog) res.json({ error: "Blog not found" })
-        blog.title = title
-        blog.content = content
-        blog.image = image
-        const result = await blog.save()
-        if (result) res.json({ message: "Updated Blog" })
+        if (!blog) {
+            res.json({ error: "Blog not found" })
+        } else {
+            blog.title = title
+            blog.content = content
+            blog.image = image
+            const result = await blog.save()
+            if (result) res.json({ message: "Updated Blog" })
+        }
     } catch (error) {
         console.log(error)
         res.json({ error: "Internal Server Error" })
     }
 }
-
+const getBlogById = async (req, res) => {
+    const { id } = req.params;
+    const blog = await Blog.findOne({ _id: id });
+    if (!Blog) {
+        res.status(404).json({ error: "Blog Not Found" })
+    } else {
+        res.status(200).json(blog)
+    }
+}
 const deleteOne = async (req, res) => {
     try {
         const { id } = req.params
@@ -101,4 +112,5 @@ module.exports = {
     getAllBlog,
     deleteOne,
     updateOne,
+    getBlogById,
 }

@@ -47,6 +47,18 @@ const getAll = async (req, res) => {
     }
 };
 
+const uploadProductImage = async (req, res) => {
+    try {
+        const originalFileName = req.file ? req.file.originalname : ''
+        const imageUrl = `http://localhost:3500/image/product/${originalFileName}`
+        res.status(200).json({
+            image: imageUrl
+        })
+    } catch (error) {
+
+    }
+}
+
 const createProduct = async (req, res) => {
     try {
         const { categoryId, productName, quantity, price, description, productImage } = req.body;
@@ -124,4 +136,5 @@ module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
+    uploadProductImage,
 };

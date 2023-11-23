@@ -51,6 +51,18 @@ const getAll = async (req, res) => {
         res.status(400).json(err)
     }
 }
+const uploadServiceImage = async (req, res) => {
+    try {
+        const originalFileName = req.file ? req.file.originalname : '';
+        const imageUrl = `http://localhost:3500/image/service/${originalFileName}`
+        res.status(200).json({
+            image: imageUrl
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
 // route: "/service"
 // method: POST
 const createService = async (req, res) => {
@@ -135,4 +147,5 @@ module.exports = {
     updateService,
     deleteMany,
     deleteById,
+    uploadServiceImage,
 }

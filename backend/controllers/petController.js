@@ -35,6 +35,18 @@ const getAll = async (req, res) => {
     }
 }
 
+const uploadPetImage = async (req, res) => {
+    try {
+        const originalFileName = req.file ? req.file.originalname : ''
+        const imageUrl = `http://localhost:3500/image/pet/${originalFileName}`
+        res.status(200).json({
+            image: imageUrl
+        })
+    } catch (error) {
+
+    }
+}
+
 const createPet = async (req, res) => {
     try {
         const { userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
@@ -147,4 +159,5 @@ module.exports = {
     getPetByUsername,
     getPetByUserId,
     updateStatus,
+    uploadPetImage,
 }
