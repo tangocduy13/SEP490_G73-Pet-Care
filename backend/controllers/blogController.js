@@ -45,7 +45,7 @@ const createBlog = async (req, res) => {
 }
 const getAllBlog = async (req, res) => {
     try {
-        const { title, page, limit } = req.query
+        const { title, page, limit, sort } = req.query
 
         const query = {}
         if (!title) {
@@ -54,12 +54,19 @@ const getAllBlog = async (req, res) => {
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
+            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
             populate: 'userId',
+        }
+        if (sort === 'acs') {
+            options.sort = 1
+        }
+        if (sort === 'desc') {
+            options.sort = -1
         }
         const blogs = await Blog.paginate(query, options)
         if (!blogs) {
-            res.json({ error: "There are no blog in database" })
-        } else res.status(201).json(blogs)
+            res.status(204).json({ error: "There are no blog in database" })
+        } else res.status(200).json(blogs)
     } catch (error) {
         console.log(error)
         res.json({ error: "Internal Server Error" })
@@ -88,7 +95,7 @@ const updateOne = async (req, res) => {
 }
 const getBlogById = async (req, res) => {
     const { id } = req.params;
-    const blog = await Blog.findOne({ _id: id });
+    const blog = await Blog.findOne({ _id: id }).populate('userId');
     if (!Blog) {
         res.status(404).json({ error: "Blog Not Found" })
     } else {
