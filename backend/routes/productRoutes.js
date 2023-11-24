@@ -19,5 +19,5 @@ router.get('/', productController.getAll)
     .patch('/', productController.updateProduct)
     .delete('/:id', productController.deleteProduct)
     .post('/upload', upload.single('image'), productController.uploadProductImage)
-
+    .get('/:id', productController.getProductById)
 module.exports = router

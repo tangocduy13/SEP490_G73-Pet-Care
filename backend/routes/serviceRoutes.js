@@ -19,5 +19,6 @@ router.get('/', serviceController.getAll)
     .patch('/', serviceController.updateService)
     .delete('/:id', serviceController.deleteById)
     .post('/upload', upload.single('image'), serviceController.uploadServiceImage)
+    .get('/:id', serviceController.getServiceById)
 
 module.exports = router
