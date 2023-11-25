@@ -161,40 +161,20 @@ const getPetListForServiceBooking = async (req, res) => {
                     userId: new mongoose.Types.ObjectId(userId),
                 },
             },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'user'
-                }
-            },
-            {
-                $unwind: '$user'
-            },
-            {
-                $lookup: {
-                    from: 'bookings',
-                    localField: 'user._id',
-                    foreignField: 'userId',
-                    as: 'bookings'
-                }
-            },
-            {
-                $match: {
-                    'bookings.status': { $ne: 'Hoàn thành' }
-                }
-            },
+
             {
                 $lookup: {
                     from: 'bookingdetails',
-                    localField: 'bookings._id',
-                    foreignField: 'bookingId',
+                    localField: '_id',
+                    foreignField: 'petId',
                     as: 'bookingdetails'
                 }
             },
             {
-                $unwind: '$bookingdetails'
+                $unwind: {
+                    path: '$bookingdetails',
+                    preserveNullAndEmptyArrays: true,
+                }
             },
             {
                 $match: {
@@ -202,10 +182,31 @@ const getPetListForServiceBooking = async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'bookings',
+                    localField: 'bookingdetails.bookingId',
+                    foreignField: '_id',
+                    as: 'bookings'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$bookings',
+                    preserveNullAndEmptyArrays: true,
+                }
+            },
+            {
+                $match: {
+                    'booking.status': { $ne: 'Hoàn thành' }
+                }
+            },
+            {
                 $group: {
                     _id: '$_id',
-                    petNames: { $addToSet: '$petName' }
-                }
+                    petName: { $first: '$petName' },
+                    // Add other fields you want to retain in the grouped result
+                    // Use $first or $addToSet to include these fields in the grouping
+                },
             }
         ])
         res.status(200).json(result);
