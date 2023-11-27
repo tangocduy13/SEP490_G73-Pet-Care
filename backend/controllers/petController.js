@@ -1,5 +1,7 @@
 const Pet = require('../models/Pet')
 const User = require('../models/User')
+const BookingDetail = require('../models/BookingDetail')
+const mongoose = require('mongoose')
 
 const getAll = async (req, res) => {
     try {
@@ -138,7 +140,6 @@ const getPetByUserId = async (req, res) => {
         const userId = req.query.id
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 10
-
         // Find pet by user id
         const pets = await Pet.paginate({ userId: userId }, {
             page, limit, populate: {
@@ -151,6 +152,69 @@ const getPetByUserId = async (req, res) => {
         res.json("Internal server error")
     }
 }
+const getPetListForServiceBooking = async (req, res) => {
+    try {
+        const { serviceId, userId } = req.body;
+        const result = await Pet.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId),
+                },
+            },
+
+            {
+                $lookup: {
+                    from: 'bookingdetails',
+                    localField: '_id',
+                    foreignField: 'petId',
+                    as: 'bookingdetails'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$bookingdetails',
+                    preserveNullAndEmptyArrays: true,
+                }
+            },
+            {
+                $match: {
+                    'bookingdetails.serviceId': { $ne: new mongoose.Types.ObjectId(serviceId) }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'bookings',
+                    localField: 'bookingdetails.bookingId',
+                    foreignField: '_id',
+                    as: 'bookings'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$bookings',
+                    preserveNullAndEmptyArrays: true,
+                }
+            },
+            {
+                $match: {
+                    'booking.status': { $ne: 'Hoàn thành' }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    petName: { $first: '$petName' },
+                    // Add other fields you want to retain in the grouped result
+                    // Use $first or $addToSet to include these fields in the grouping
+                },
+            }
+        ])
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Internal Server Error")
+    }
+}
 
 module.exports = {
     getAll,
@@ -160,4 +224,5 @@ module.exports = {
     getPetByUserId,
     updateStatus,
     uploadPetImage,
+    getPetListForServiceBooking,
 }
