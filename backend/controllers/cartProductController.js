@@ -100,7 +100,7 @@ const checkout = async (req, res) => {
         const order = new Order({
             userId: userId,
             totalPrice: total,
-            status: 'Ordered',
+            status: 'Chờ xác nhận',
             recipientName: req.body.recipientName,
             recipientPhoneNumber: req.body.recipientPhoneNumber,
             deliveryAddress: req.body.deliveryAddress,

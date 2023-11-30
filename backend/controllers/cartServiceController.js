@@ -101,7 +101,7 @@ const checkout = async (req, res) => {
         const booking = new Booking({
             userId: userId,
             totalPrice: total, 
-            status: 'Process',
+            status: 'Chờ thanh toán',
         });
         const createdBooking = await booking.save();
         
