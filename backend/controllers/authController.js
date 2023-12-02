@@ -9,30 +9,20 @@ const mailer = require('../utils/mailer')
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
-        if (!email || !password) {
-            res.json({
-                error: "Email and password can not be empty"
-            })
-        }
-        else if (!emailValidator.validate(email)) {
-            res.json({
-                error: "Wrong email format"
-            })
-        }
         const user = await User.findOne({ email: email })
         if (!user)
-            return res.json({
-                error: 'Email not found'
+            return res.status(400).json({
+                error: 'Email không tồn tại'
             })
         // check email đã verify hay chưa
         else if (user.status === "verifying") {
-            return res.json({
+            return res.status(400).json({
                 error: 'Unverified'
             })
         } else {
             const matchPwd = await bcrypt.compare(password, user.password)
             if (!matchPwd)
-                return res.json({
+                return res.status(400).json({
                     error: 'Sai mật khẩu'
                 })
 
@@ -63,7 +53,6 @@ const register = async (req, res) => {
     try {
         const { fullname, email, password, role, phone, address, gender, userImage } = req.body
 
-
         // khi vừa đăng ký mặc định tài khoản là 'verifying'
         const status = 'verifying'
         const duplicate = await User.findOne({ email: email })
@@ -71,22 +60,7 @@ const register = async (req, res) => {
             res.json({
                 error: "Email đã được sử dụng"
             })
-        }
-        // check value valid
-        else if (!fullname || !email || !password) {
-            res.json({
-                error: "fullname, email, password không thể bỏ trống",
-            })
-        }
-        //check validate email
-        else if (!emailValidator.validate(email)) {
-            return res.json({
-                error: "Vui lòng nhập đúng email"
-            })
-        }
-        // check duplicate email
-        // 
-        else {
+        } else {
             const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
             const hashPassword = await bcrypt.hash(password, 10)
 
@@ -98,7 +72,7 @@ const register = async (req, res) => {
             } else {
                 mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
                 res.status(201).json({
-                    message: "Register successful",
+                    message: "Đăng ký thành công",
                     User: user,
                 })
             }
