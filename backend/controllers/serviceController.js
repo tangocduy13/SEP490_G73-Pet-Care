@@ -73,7 +73,7 @@ const createService = async (req, res) => {
             error: "Create fail"
         })
         res.status(201).json({
-            message: "Create successful",
+            message: "Tạo mới dịch vụ thành công",
             service: service
         })
     } catch (err) {
