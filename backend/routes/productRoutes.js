@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const productController = require('../controllers/productController')
 const multer = require('multer')
+const validateProduct = require('../middleware/validateProductInput')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/image/product');
@@ -15,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get('/', productController.getAll)
-    .post('/', productController.createProduct)
+    .post('/', validateProduct.validateCreateProduct, productController.createProduct)
     .patch('/', productController.updateProduct)
     .delete('/:id', productController.deleteProduct)
     .post('/upload', upload.single('image'), productController.uploadProductImage)

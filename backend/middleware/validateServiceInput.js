@@ -9,7 +9,7 @@ const validateCreateService = [
     body('description').trim().notEmpty().withMessage('Vui lòng nhập mô tả cho dịch vụ'),
 
     body('price').notEmpty().withMessage('Vui lòng nhập giá')
-        .isFloat({ min: 1 }).withMessage("Giá phải lớn hơn 0"),
+        .isInt({ min: 1 }).withMessage("Giá phải lớn hơn 0"),
 
     body('categoryId').trim().notEmpty().withMessage('Vui lòng chọn loại dịch vụ'),
 
@@ -34,7 +34,7 @@ const validateUpdateService = [
     body('description').trim().notEmpty().withMessage('Vui lòng nhập mô tả cho dịch vụ'),
 
     body('price').notEmpty().withMessage('Vui lòng nhập giá')
-        .isFloat({ min: 1 }).withMessage("Giá phải lớn hơn 0"),
+        .isInt({ min: 1 }).withMessage("Giá phải là một số lớn hơn 0"),
 
     body('saleStartTime').optional({ nullable: true })
         .isISO8601().withMessage('Vui lòng nhập ngày tháng theo định dạng YYYY-MM-DD'),
