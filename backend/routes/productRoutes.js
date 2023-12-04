@@ -17,7 +17,7 @@ const upload = multer({ storage: storage })
 
 router.get('/', productController.getAll)
     .post('/', validateProduct.validateCreateProduct, productController.createProduct)
-    .patch('/', productController.updateProduct)
+    .patch('/', validateProduct.validateUpdateProduct, productController.updateProduct)
     .delete('/:id', productController.deleteProduct)
     .post('/upload', upload.single('image'), productController.uploadProductImage)
     .get('/:id', productController.getProductById)

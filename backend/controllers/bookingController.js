@@ -48,7 +48,22 @@ const getAllBooking = async (req, res) => {
 const getAllBookingByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;
-        const bookings = await Booking.find({ userId }).populate('userId');
+        const { page, limit, startDate, endDate } = req.query
+
+        if (startDate && endDate) {
+            query.createdAt = {
+                $gte: new Date(startDate), // Ngày bắt đầu
+                $lte: new Date(endDate),   // Ngày kết thúc
+            };
+        }
+
+        const options = {
+            page: parseInt(page) || 1, // Trang mặc định là 1
+            limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 10
+            populate: 'userId'
+        };
+        const query = { userId: userId }
+        const bookings = await Booking.paginate(query, options);
         if (!bookings) {
             return res.status(404).json({
                 error: "UserId = :" + userId + " has no Bookings in the Database"

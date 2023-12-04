@@ -10,7 +10,7 @@ const petSchema = new mongoose.Schema({
     petName: String,
     rank: {
         type: Number,
-        default: 1,
+        default: 0,
     },
     status: {
         type: Boolean,
