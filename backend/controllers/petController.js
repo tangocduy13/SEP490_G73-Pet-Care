@@ -216,6 +216,19 @@ const getPetListForServiceBooking = async (req, res) => {
     }
 }
 
+const deleteOne = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await Pet.findByIdAndDelete(id)
+        if (result) {
+            res.status(201).json(`Deleted pet ${id}`);
+        }
+    } catch (error) {
+        res.status(500).json("Internal Server Error")
+        console.log(error)
+    }
+}
+
 module.exports = {
     getAll,
     createPet,
@@ -225,4 +238,5 @@ module.exports = {
     updateStatus,
     uploadPetImage,
     getPetListForServiceBooking,
+    deleteOne
 }
