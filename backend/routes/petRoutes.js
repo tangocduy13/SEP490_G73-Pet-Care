@@ -22,6 +22,6 @@ router.get('/', petController.getAll)
     .get('/userid', petController.getPetByUserId)
     .put('/updateStatus', petController.updateStatus)
     .post('/upload', upload.single('image'), petController.uploadPetImage)
-    .get('/booking', petController.getPetListForServiceBooking)
+    .post('/booking', petController.getPetListForServiceBooking)
     .delete('/:id', petController.deleteOne)
 module.exports = router
