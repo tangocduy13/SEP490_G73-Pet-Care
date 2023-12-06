@@ -122,7 +122,8 @@ const checkout = async (req, res) => {
                 await orderDetail.save();
 
                 // Update the total price
-                total += product.price * cartItem.quantity;
+                // total += product.price * cartItem.quantity;
+                total += (product.price - (product.price * product.discount)/100) * cartItem.quantity;
             }
             product.quantity -= cartItem.quantity;
             await product.save();

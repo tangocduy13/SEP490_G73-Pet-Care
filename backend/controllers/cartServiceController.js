@@ -121,7 +121,7 @@ const checkout = async (req, res) => {
                 await bookingDetail.save();
 
                 // Update the total price
-                total += service.price * cartItem.quantity;
+                total += (service.price - (service.price * service.discount)/100) * cartItem.quantity;
             }
         }
 
