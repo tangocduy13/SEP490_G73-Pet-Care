@@ -83,7 +83,7 @@ const createOrder = async (req, res) => {
         const order = new Order();
         order.userId = userId;
         order.totalPrice = totalPrice;
-        order.status = 'Ordered';
+        order.status = 'Chờ xác nhận';
         const result = await order.save();
         if (!result) {
             return res.status(404).json({

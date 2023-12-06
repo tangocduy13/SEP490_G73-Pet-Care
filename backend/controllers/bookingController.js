@@ -83,7 +83,7 @@ const createBooking = async (req, res) => {
         booking.userId = userId;
         booking.petId = petId;
         booking.totalPrice = totalPrice;
-        booking.status = 'Đang chờ xử lý';
+        booking.status = 'Chờ thanh toán';
         const result = await booking.save();
         if (!result) {
             return res.status(404).json({
