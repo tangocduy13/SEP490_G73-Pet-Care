@@ -2,7 +2,7 @@ const { body, validationResult } = require('express-validator')
 
 const validateCreateProduct = [
     body('productName').trim().notEmpty().withMessage('Vui lòng nhập tên sản phẩm')
-        .matches(/^[\p{L}\s]+$/u).withMessage('Tên sản phẩm không chứa ký tự đặc biệt'),
+        .matches(/^[\p{L}\s&\-]+$/u).withMessage('Tên sản phẩm không chứa ký tự đặc biệt'),
     body('quantity').notEmpty().withMessage('Vui lòng nhập số lượng sản phẩm')
         .isInt({ min: 1 }).withMessage('Số lượng sản phẩm phải là một số lớn hơn 0'),
     body('price').notEmpty().withMessage('Vui lòng nhập giá tiền')
@@ -22,7 +22,7 @@ const validateCreateProduct = [
 const validateUpdateProduct = [
     body('id').trim().notEmpty().withMessage('Không lấy được ID của sản phẩm'),
     body('productName').trim().notEmpty().withMessage('Vui lòng nhập tên sản phẩm')
-        .matches(/^[\p{L}\s]+$/u).withMessage('Tên sản phẩm không chứa ký tự đặc biệt'),
+        .matches(/^[\p{L}\s&\-]+$/u).withMessage('Tên sản phẩm không chứa ký tự đặc biệt'),
     body('quantity').notEmpty().withMessage('Vui lòng nhập số lượng sản phẩm')
         .isInt({ min: 1 }).withMessage('Số lượng sản phẩm phải là một số lớn hơn 0'),
     body('price').notEmpty().withMessage('Vui lòng nhập giá tiền')

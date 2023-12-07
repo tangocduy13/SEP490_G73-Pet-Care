@@ -6,16 +6,20 @@ const mongoose = require('mongoose')
 
 const getAll = async (req, res) => {
     try {
-        const { page, limit } = req.query
+        const { page, limit, categoryId } = req.query
 
         const query = {}
+
+        if (categoryId) {
+            query.categoryId = categoryId;
+        }
 
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
         }
 
-        const result = await Pet.paginate({}, {
+        const result = await Pet.paginate(query, {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
             populate: {

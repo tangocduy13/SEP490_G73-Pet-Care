@@ -8,6 +8,7 @@ const getAll = async (req, res) => {
     try {
         const { sortPrice, page, limit, categoryId, service } = req.query
         const query = {}
+        query.status = { $eq: true }
         if (categoryId) {
             query.categoryId = categoryId || ''
         }
@@ -51,6 +52,54 @@ const getAll = async (req, res) => {
         res.status(400).json(err)
     }
 }
+const manageAllService = async (req, res) => {
+    try {
+        const { sortPrice, page, limit, categoryId, service } = req.query
+        const query = {}
+        if (categoryId) {
+            query.categoryId = categoryId || ''
+        }
+        if (service) {
+            query.serviceName = { $regex: new RegExp(service, 'i') };
+        }
+        const options = {
+            page: parseInt(page) || 1, // mặc định trang là 1
+            limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging
+            query: query
+        }
+        if (sortPrice === 'asc') {
+            options.sort = { price: 1 } // sắp xếp giá theo giá tăng dần
+        } else if (sortPrice === 'desc') {
+            options.sort = { price: -1 } // sắp xếp theo giá giảm dần
+        }
+
+        const result = await Service.paginate(query, options)
+
+        if (!result.docs || result.docs.length === 0) {
+            return res.json({
+                error: "There are no Service in the Database",
+            });
+        }
+        // Map each document to include the discountedPrice
+        const servicesWithDiscountedPrice = result.docs.map(service => {
+            return {
+                ...service.toObject(),
+                discountedPrice: service.discountedPrice // Include discountedPrice in each service
+            };
+        });
+
+        // Include services with discountedPrice in the response
+        const response = {
+            ...result,
+            docs: servicesWithDiscountedPrice
+        };
+        res.status(200).json(response);
+    } catch (err) {
+        console.log(err)
+        res.status(400).json(err)
+    }
+}
+
 const uploadServiceImage = async (req, res) => {
     try {
         const originalFileName = req.file ? req.file.originalname : '';
@@ -164,4 +213,5 @@ module.exports = {
     deleteById,
     uploadServiceImage,
     getServiceById,
+    manageAllService,
 }

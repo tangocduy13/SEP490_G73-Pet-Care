@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get('/', serviceController.getAll)
+    .get('/manage', serviceController.manageAllService)
     .post('/', validateService.validateCreateService, serviceController.createService)
     .patch('/', validateService.validateUpdateService, serviceController.updateService)
     .delete('/:id', serviceController.deleteById)
