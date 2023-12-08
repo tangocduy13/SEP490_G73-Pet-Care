@@ -10,10 +10,11 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body
         const user = await User.findOne({ email: email })
-        if (!user)
+        console.log(user)
+        if (!user){
             return res.status(400).json({
                 error: 'Email không tồn tại'
-            })
+            })}
         // check email đã verify hay chưa
         else if (user.status === "verifying") {
             return res.json({
