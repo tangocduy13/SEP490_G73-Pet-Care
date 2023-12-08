@@ -16,7 +16,7 @@ const login = async (req, res) => {
             })
         // check email đã verify hay chưa
         else if (user.status === "verifying") {
-            return res.status(400).json({
+            return res.json({
                 error: 'Unverified'
             })
         } else {
