@@ -35,7 +35,8 @@ const validateLoginData = async (req, res, next) => {
 
 const validateRegisterData = [
     // fullname can not be empty
-    body('fullname').trim().notEmpty().withMessage('Tên không được bỏ trống'),
+    body('fullname').trim().notEmpty().withMessage('Tên không được bỏ trống')
+        .matches(/^[\p{L} ]+$/u).withMessage('Họ và tên không chính xác'),
     // email, password can not be empty
     body('email').trim().notEmpty().withMessage('Email không được bỏ trống'),
     body('password').trim().notEmpty().withMessage('Mật khẩu không được bỏ trống')
