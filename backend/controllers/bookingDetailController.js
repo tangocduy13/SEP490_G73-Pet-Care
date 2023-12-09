@@ -34,7 +34,23 @@ const createBookingDetail = async (req, res) => {
     }
 }
 
+const deleteOrderDetail = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await BookingDetail.findByIdAndDelete(id)
+        if (!result) {
+            res.status(400).json({ error: "Gặp lỗi không xóa được" });
+        } else {
+            res.status(201).json({ message: "Xóa sản phẩm thành công" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+        console.log(error)
+    }
+}
+
 module.exports = {
     getBookingDetailByBookingId,
-    createBookingDetail
+    createBookingDetail,
+    deleteOrderDetail
 }

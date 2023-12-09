@@ -9,5 +9,6 @@ router.get('/', orderController.getAllOrder)
     .put('/:orderId', validateOrder.validateUpdateOrder, orderController.updateOrder)
     .put('/update-status/:orderId', orderController.updateStatus)
     .delete('/:orderId', orderController.deleteOrder)
+    .get('/noLimit', orderController.getAllOrderNoLimit)
 
 module.exports = router    
