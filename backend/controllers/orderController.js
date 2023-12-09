@@ -1,6 +1,16 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 
+const getAll = async (req, res) => {
+    try {
+        const orders = await Order.find();
+        res.status(200).json(orders);
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 const getAllOrder = async (req, res) => {
     try {
         const { userId, status, startDate, endDate, sort, page, limit } = req.query;
@@ -203,6 +213,7 @@ const getAllOrderNoLimit = async (req, res) => {
 }
 
 module.exports = {
+    getAll,
     getAllOrder,
     getAllOrderByUserId,
     createOrder,
