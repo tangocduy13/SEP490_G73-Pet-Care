@@ -1,23 +1,11 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
+const User = require('../models/User')
 
 const getTotalOrderByDate = async (req, res) => {
     try {
-        let { startDate, endDate } = req.query;
-        // Kiểm tra xem startDate và endDate có tồn tại trong request query không
-        if (!startDate || !endDate) {
-            // Nếu không có dữ liệu đầu vào, sử dụng ngày mặc định
-            const currentDate = new Date();
-            startDate = new Date(currentDate.getFullYear(), 0, 1); // Ngày đầu tiên của năm
-            endDate = currentDate; // Ngày hiện tại
-        } else {
-            startDate = new Date(startDate);
-            endDate = new Date(endDate);
-        }
-        const totalOrders = await Order.countDocuments({
-            createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
-        });
-        res.status(200).json(totalOrders)
+        const totalOrders = await Order.find()
+        res.status(200).json({totalOrders})
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -55,23 +43,10 @@ const getTotalRevenueByDate = async (req, res) => {
     }
 }
 
-const getTotalCustomerByDate = async (req, res) => {
+const getTotalCustomer = async (req, res) => {
     try {
-        let { startDate, endDate } = req.query;
-        // Kiểm tra xem startDate và endDate có tồn tại trong request query không
-        if (!startDate || !endDate) {
-            // Nếu không có dữ liệu đầu vào, sử dụng ngày mặc định
-            const currentDate = new Date();
-            startDate = new Date(currentDate.getFullYear(), 0, 1); // Ngày đầu tiên của năm
-            endDate = currentDate; // Ngày hiện tại
-        } else {
-            startDate = new Date(startDate);
-            endDate = new Date(endDate);
-        }
-        const totalCustomers = await Order.distinct('userId', {
-            createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
-        });
-        res.status(200).json(totalCustomers.length)
+        const user = await User.find()
+        res.status(200).json(user)
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -162,7 +137,7 @@ const getRevenueStatistics = async (req, res) => {
 module.exports = {
     getTotalOrderByDate,
     getTotalRevenueByDate,
-    getTotalCustomerByDate,
+    getTotalCustomer,
     getTotalProductsSoldByDate,
     getRevenueStatistics
 }
