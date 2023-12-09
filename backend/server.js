@@ -62,3 +62,4 @@ mongoose.connect(MONGO_URI)
         console.log(err);
     })
 
+module.exports = app
