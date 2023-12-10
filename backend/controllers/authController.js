@@ -10,11 +10,12 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body
         const user = await User.findOne({ email: email })
-        console.log(user)
-        if (!user){
+
+        if (!user) {
             return res.status(400).json({
                 error: 'Email không tồn tại'
-            })}
+            })
+        }
         // check email đã verify hay chưa
         else if (user.status === "verifying") {
             return res.json({
@@ -38,7 +39,7 @@ const login = async (req, res) => {
                     expiresIn: '24h'
                 }
             )
-            res.cookie('token', token).json({
+            res.status(200).cookie('token', token).json({
                 message: `Xin chào ${user.fullname}`,
                 token: token
             })

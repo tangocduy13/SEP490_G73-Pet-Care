@@ -53,7 +53,7 @@ app.all('*', (req, res) => {
 
 mongoose.connect(MONGO_URI)
     .then(() => {
-        console.log("Database connectedd");
+        console.log("Database connected");
         app.listen(PORT, () => {
             console.log(`Server starting at http://localhost:${PORT}`)
         })
