@@ -27,6 +27,18 @@ const validateUpdateProduct = [
         .isInt({ min: 1 }).withMessage('Số lượng sản phẩm phải là một số lớn hơn 0'),
     body('price').notEmpty().withMessage('Vui lòng nhập giá tiền')
         .isInt({ min: 1 }).withMessage('Giá phải là một số lớn hơn 0'),
+    body('saleStartTime').optional({ nullable: true })
+        .isISO8601().withMessage('Vui lòng nhập ngày tháng theo định dạng YYYY-MM-DD'),
+    body('saleEndTime').optional({ nullable: true })
+        .isISO8601().withMessage('Vui lòng nhập ngày tháng theo định dạng YYYY-MM-DD')
+        .custom((value, { req }) => {
+            const saleStartTime = new Date(req.body.saleStartTime)
+            const saleEndTime = new Date(req.body.saleEndTime)
+            if (saleStartTime >= saleEndTime) {
+                throw new Error('Thời gian sale kết thúc phải sau thời gian sale bắt đầu')
+            } else return true;
+        }),
+    body('discount').isFloat({ min: 0, max: 100 }).withMessage('Nhập một số trong khoảng từ 0 đến 100'),
     body('description').trim().notEmpty().withMessage('Vui lòng nhập môt tả cho sản phẩm'),
     body('productImage').trim().notEmpty().withMessage('Vui lòng chọn ảnh cho sản phẩm'),
     body('categoryId').trim().notEmpty().withMessage('Vui lòng chọn loại dịch vụ'),

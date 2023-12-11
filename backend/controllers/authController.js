@@ -59,7 +59,7 @@ const register = async (req, res) => {
         const status = 'verifying'
         const duplicate = await User.findOne({ email: email })
         if (duplicate) {
-            res.json({
+            res.status(400).json({
                 error: "Email đã được sử dụng"
             })
         } else {
@@ -68,7 +68,7 @@ const register = async (req, res) => {
 
             const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage, verifyCode })
             if (!user) {
-                res.json({
+                res.status(500).json({
                     error: "Internal server error"
                 })
             } else {
