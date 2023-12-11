@@ -150,6 +150,20 @@ describe("POST /service ", () => {
             expect(response.statusCode).toEqual(400);
             expect(response.body.error).toEqual("Vui lòng chọn ảnh cho dịch vụ");
         })
+        it("unit test tạo mới dịch vụ thành công /expect status code = 201", async () => {
+            const response = await request(app)
+                .post("/service")
+                .send({
+                    "serviceName": "unit test cho dịch vụ mới mở",
+                    "status": true,
+                    "description": "ưu đãi đặc biệt",
+                    "price": 200000,
+                    "categoryId": "6537670854c530426554f6b3",
+                    "serviceImage": "image.png"
+                })
+            expect(response.statusCode).toEqual(201);
+            expect(response.body.message).toEqual("Tạo mới dịch vụ thành công");
+        })
     })
 })
 
