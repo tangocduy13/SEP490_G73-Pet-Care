@@ -4,6 +4,7 @@ const getAll = async (req, res) => {
     try {
         const { page, limit, product, categoryId } = req.query;
         const query = {}
+        query.quantity = { $gt: 0 };
         if (categoryId) {
             query.categoryId = categoryId || ''
         }
@@ -46,6 +47,53 @@ const getAll = async (req, res) => {
         });
     }
 };
+
+const manageAllProduct = async (req, res) => {
+    try {
+        const { page, limit, product, categoryId } = req.query;
+        const query = {}
+        if (categoryId) {
+            query.categoryId = categoryId || ''
+        }
+        // tìm kiếm tên product theo tên
+        if (product) {
+            query.productName = { $regex: new RegExp(product, 'i') }
+        }
+        const options = {
+            page: parseInt(page) || 1, // mặc định trang là 1
+            limit: parseInt(limit) || 10,
+        };
+
+        const result = await Product.paginate(query, options);
+
+        if (!result.docs || result.docs.length === 0) {
+            return res.json({
+                error: "There are no Product in the Database",
+            });
+        }
+
+        // Map each document to include the discountedPrice
+        const productsWithDiscountedPrice = result.docs.map(product => {
+            return {
+                ...product.toObject(),
+                discountedPrice: product.discountedPrice // Include discountedPrice in each product
+            };
+        });
+
+        // Include products with discountedPrice in the response
+        const response = {
+            ...result,
+            docs: productsWithDiscountedPrice
+        };
+        res.status(200).json(response);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+}
 
 const uploadProductImage = async (req, res) => {
     try {
@@ -154,4 +202,5 @@ module.exports = {
     deleteProduct,
     uploadProductImage,
     getProductById,
+    manageAllProduct,
 };

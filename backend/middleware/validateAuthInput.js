@@ -1,26 +1,42 @@
 const { body, validationResult } = require('express-validator')
 
-const validateLoginData = [
-    // validate email
-    body('email').trim().notEmpty().withMessage('Vui lòng nhập email'),
+const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-    body('email').isEmail().normalizeEmail().withMessage('Email không hợp lệ'),
+// const validateLoginData = [
+//     // validate email
+//     body('email').trim().notEmpty().withMessage('Vui lòng nhập email'),
 
-    // validate password
-    body('password').trim().notEmpty().withMessage('Bạn chưa nhập mật khẩu'),
+//     body('email').isEmail().normalizeEmail().withMessage('Email không hợp lệ'),
 
-    // check for errors
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array()[0].msg });
-        }
-        else next();
+//     // validate password
+//     body('password').trim().notEmpty().withMessage('Bạn chưa nhập mật khẩu'),
+
+//     // check for errors
+//     (req, res, next) => {
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({ error: errors.array()[0].msg });
+//         }
+//         else next();
+//     }
+// ]
+
+const validateLoginData = async (req, res, next) => {
+    if (req.body.email.trim() === '') {
+        res.status(400).json({ error: 'Vui lòng nhập email' });
+    } else if (!req.body.email.match(validRegex)) {
+        res.status(400).json({ error: 'Email không hợp lệ' });
+    } else if (req.body.password.trim() === '') {
+        res.status(400).json({ error: 'Bạn chưa nhập mật khẩu' });
+    } else {
+        next();
     }
-]
+}
+
 const validateRegisterData = [
     // fullname can not be empty
-    body('fullname').trim().notEmpty().withMessage('Tên không được bỏ trống'),
+    body('fullname').trim().notEmpty().withMessage('Tên không được bỏ trống')
+        .matches(/^[\p{L} ]+$/u).withMessage('Họ và tên không chính xác'),
     // email, password can not be empty
     body('email').trim().notEmpty().withMessage('Email không được bỏ trống'),
     body('password').trim().notEmpty().withMessage('Mật khẩu không được bỏ trống')

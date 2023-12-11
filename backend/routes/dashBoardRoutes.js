@@ -4,7 +4,7 @@ const dashBoardController = require('../controllers/dashBoardController')
 
 router.get('/order', dashBoardController.getTotalOrderByDate)
     .get('/revenue', dashBoardController.getTotalRevenueByDate)
-    .get('/customer', dashBoardController.getTotalCustomerByDate)
+    .get('/customer', dashBoardController.getTotalCustomer)
     .get('/product-sold', dashBoardController.getTotalProductsSoldByDate)
     .get('/revenue-statistics', dashBoardController.getRevenueStatistics)
 
