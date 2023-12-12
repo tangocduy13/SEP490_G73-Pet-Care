@@ -106,7 +106,7 @@ const getRevenueStatistics = async (req, res) => {
                         $gte: new Date(`${currentYear}-01-01`),
                         $lte: new Date(`${currentYear}-12-31`),
                     },
-                    status: 'Ordered', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
+                    status: 'Đã giao hàng', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
                 },
             },
             {

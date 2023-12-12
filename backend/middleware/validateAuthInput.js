@@ -22,13 +22,13 @@ const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0
 // ]
 
 const validateLoginData = async (req, res, next) => {
-    if(req.body.email.trim() === ''){
+    if (req.body.email.trim() === '') {
         res.status(400).json({ error: 'Vui lòng nhập email' });
-    }else if(!req.body.email.match(validRegex)){
+    } else if (!req.body.email.match(validRegex)) {
         res.status(400).json({ error: 'Email không hợp lệ' });
-    }else if(req.body.email.trim() === ''){
+    } else if (req.body.password.trim() === '') {
         res.status(400).json({ error: 'Bạn chưa nhập mật khẩu' });
-    }else{
+    } else {
         next();
     }
 }

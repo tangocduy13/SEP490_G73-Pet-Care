@@ -19,8 +19,14 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    saleStartTime: Date,
-    saleEndTime: Date,
+    saleStartTime: {
+        type: Date,
+        default: null,
+    },
+    saleEndTime: {
+        type: Date,
+        default: null,
+    },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ServiceCategory",
