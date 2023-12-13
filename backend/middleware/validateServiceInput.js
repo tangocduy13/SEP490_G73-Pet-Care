@@ -2,7 +2,7 @@ const { body, validationResult } = require('express-validator');
 
 const validateCreateService = [
     body('serviceName').trim().notEmpty().withMessage('Vui lòng nhập tên dịch vụ')
-        .matches(/^[\p{L}\s&\-]+$/u).withMessage('Tên dịch vụ không chứa ký tự đặc biệt'),
+        .matches(/^[\p{L}0-9\s&\-]+$/u).withMessage('Tên dịch vụ không chứa ký tự đặc biệt'),
 
     body('status').isBoolean().withMessage('Vui lòng chọn đúng trạng thái của dịch vụ'),
 
@@ -27,7 +27,7 @@ const validateUpdateService = [
     body('id').trim().notEmpty().withMessage('Không lấy được service ID'),
 
     body('serviceName').trim().notEmpty().withMessage('Vui lòng nhập tên dịch vụ')
-        .matches(/^[\p{L}\s&\-]+$/u).withMessage('Tên dịch vụ không chứa ký tự đặc biệt'),
+        .matches(/^[\p{L}0-9\s&\-]+$/u).withMessage('Tên dịch vụ không chứa ký tự đặc biệt'),
 
     body('status').isBoolean().withMessage('Vui lòng chọn đúng trạng thái của dịch vụ'),
 

@@ -1,9 +1,7 @@
 const { body, validationResult } = require("express-validator");
 
-const validRegex =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
 const validateLoginData = [
+  // cho phép nhập mail edu, mail công ty
   // validate email
   body("email").trim().notEmpty().withMessage("Vui lòng nhập email"),
 
