@@ -3,7 +3,7 @@ const router = express.Router()
 const cartServiceController = require('../controllers/cartServiceController')
 
 router.get('/view-cart', cartServiceController.viewCart)
-.get('/checkout', cartServiceController.checkout)
+.post('/checkout', cartServiceController.checkout)
 .post('/add-to-cart', cartServiceController.addToCart)
 .delete('/remove-from-cart/:serviceId', cartServiceController.removeFromCart)
    
