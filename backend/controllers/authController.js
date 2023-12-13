@@ -159,7 +159,7 @@ const verify = async (req, res) => {
         const user = await User.findOne({ email: email })
 
         if (!user) {
-            res.json("Email này không tồn tại")
+            res.status(400).json("Email này không tồn tại")
         }
 
         else if (code === user.verifyCode) {
@@ -169,10 +169,10 @@ const verify = async (req, res) => {
             user.save()
             res.status(200).json({ message: "Xác thực thành công" })
         }
-        else res.json({ error: "Sai mã xác thực. Vui lòng kiểm tra lại" })
+        else res.status(400).json({ error: "Sai mã xác thực. Vui lòng kiểm tra lại" })
     } catch (error) {
         console.log(error)
-        res.json({ error: "Fail" })
+        res.status(404).json({ error: "Fail" })
     }
 }
 
