@@ -10,7 +10,7 @@ const viewCart = async (req, res) => {
         // Lấy thông tin người dùng từ token JWT
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
+        const userId = decoded.id;
 
         const cartItems = await CartService.find({ userId }).populate('petId').populate('serviceId');
         res.status(200).json(cartItems);
@@ -26,10 +26,10 @@ const addToCart = async (req, res) => {
         // const token = req.cookies.token;
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
+        const userId = decoded.id;
 
         const { serviceId, petId, quantity } = req.body;
-       
+
         const service = await Service.findById(serviceId);
 
         if (!service) {
@@ -39,7 +39,7 @@ const addToCart = async (req, res) => {
         }
 
         let cartService = await CartService.findOne({ userId, serviceId, petId });
-        
+
         if (cartService) {
             cartService.quantity += quantity;
         } else {
@@ -88,8 +88,7 @@ const checkout = async (req, res) => {
         // const token = req.cookies.token;
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id; 
-        const totalPrice = req.body.totalPrice
+        const userId = decoded.id;
 
         const cartItems = await CartService.find({ userId });
 
@@ -101,11 +100,11 @@ const checkout = async (req, res) => {
         let total = 0;
         const booking = new Booking({
             userId: userId,
-            totalPrice: total, 
+            totalPrice: total,
             status: 'Chờ thanh toán',
         });
         const createdBooking = await booking.save();
-        
+
         // Create booking details for each cart item
         for (const cartItem of cartItems) {
 
@@ -122,12 +121,12 @@ const checkout = async (req, res) => {
                 await bookingDetail.save();
 
                 // Update the total price
-                // total += (service.price - (service.price * service.discount)/100) * cartItem.quantity;
+                total += service.discountedPrice * cartItem.quantity;
             }
         }
 
         // Update the booking's total price
-        createdBooking.totalPrice = totalPrice;
+        createdBooking.totalPrice = total;
         await createdBooking.save();
 
         // Remove all cart items for the user
@@ -139,7 +138,7 @@ const checkout = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({err, message: 'Can not checkout'});
+        res.status(500).json({ err, message: 'Can not checkout' });
     }
 }
 

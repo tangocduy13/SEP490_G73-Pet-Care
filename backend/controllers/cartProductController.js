@@ -10,7 +10,7 @@ const viewCart = async (req, res) => {
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
-        
+
         const cartItems = await CartProduct.find({ userId }).populate('productId');
         res.status(200).json(cartItems);
     } catch (err) {
@@ -88,7 +88,6 @@ const checkout = async (req, res) => {
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
-        const totalPrice = req.body.totalPrice
 
         const cartItems = await CartProduct.find({ userId });
 
@@ -123,15 +122,14 @@ const checkout = async (req, res) => {
                 await orderDetail.save();
 
                 // Update the total price
-                // total += product.price * cartItem.quantity;
-                // total += (product.price - (product.price * product.discount)/100) * cartItem.quantity;
+                total += product.discountedPrice * cartItem.quantity;
             }
             product.quantity -= cartItem.quantity;
             await product.save();
         }
 
         // Update the booking's total price
-        createdOrder.totalPrice = totalPrice;
+        createdOrder.totalPrice = total;
         await createdOrder.save();
 
         // Remove all cart items for the user
