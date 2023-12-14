@@ -45,6 +45,15 @@ const getAllBooking = async (req, res) => {
     }
 }
 
+const getBooking = async (req, res) => {
+    try {
+        const booking = await Booking.find()
+        res.status(200).json(booking)
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 const getAllBookingByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -83,7 +92,7 @@ const createBooking = async (req, res) => {
         booking.userId = userId;
         booking.petId = petId;
         booking.totalPrice = totalPrice;
-        booking.status = 'Chờ thanh toán';
+        booking.status = 'Chờ xác nhận';
         const result = await booking.save();
         if (!result) {
             return res.status(404).json({
@@ -169,5 +178,6 @@ module.exports = {
     createBooking,
     updateBooking,
     deleteBooking,
-    updateStatus
+    updateStatus,
+    getBooking
 }

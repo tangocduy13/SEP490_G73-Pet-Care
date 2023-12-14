@@ -5,7 +5,7 @@ const validateOrder = require('../middleware/validateOrderInput')
 
 router.get('/', orderController.getAllOrder)
     .get('/all', orderController.getAll)
-    .get('/:userId', orderController.getAllOrderByUserId)
+    .get('/get-all-order-by-uid/:userId', orderController.getAllOrderByUserId)
     .post('/', validateOrder.validateCreateOrder, orderController.createOrder)
     .put('/:orderId', validateOrder.validateUpdateOrder, orderController.updateOrder)
     .put('/update-status/:orderId', orderController.updateStatus)
