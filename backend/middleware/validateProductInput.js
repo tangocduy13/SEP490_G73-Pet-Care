@@ -40,7 +40,6 @@ const validateUpdateProduct = [
         }),
     body('discount').isFloat({ min: 0, max: 100 }).withMessage('Nhập một số trong khoảng từ 0 đến 100'),
     body('description').trim().notEmpty().withMessage('Vui lòng nhập môt tả cho sản phẩm'),
-    body('productImage').trim().notEmpty().withMessage('Vui lòng chọn ảnh cho sản phẩm'),
     body('categoryId').trim().notEmpty().withMessage('Vui lòng chọn loại dịch vụ'),
 
     (req, res, next) => {

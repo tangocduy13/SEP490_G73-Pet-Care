@@ -21,7 +21,12 @@ const login = async (req, res) => {
             return res.json({
                 error: 'Unverified'
             })
-        } else {
+        } else if (user.status === "inactive") {
+            return res.json({
+                error: 'Tài khoản của bạn đã bị khóa'
+            })
+        }
+        else {
             const matchPwd = await bcrypt.compare(password, user.password)
             if (!matchPwd)
                 return res.status(400).json({

@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    status: String, // active incative verifying
+    status: String, // active inactive verifying
     userImage: String,
     verifyCode: String,
 })
