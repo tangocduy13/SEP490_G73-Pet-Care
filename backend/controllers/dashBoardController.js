@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const Booking = require('../models/Booking');
 const OrderDetail = require('../models/OrderDetail');
 const User = require('../models/User')
 
@@ -106,7 +107,7 @@ const getRevenueStatistics = async (req, res) => {
                         $gte: new Date(`${currentYear}-01-01`),
                         $lte: new Date(`${currentYear}-12-31`),
                     },
-                    status: 'Đã giao hàng', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
+                    status: 'Hoàn thành', // Chỉ lấy các đơn hàng đã hoàn thành (hoặc trạng thái tương ứng)
                 },
             },
             {
@@ -117,7 +118,7 @@ const getRevenueStatistics = async (req, res) => {
             },
         ];
 
-        const result = await Order.aggregate(pipeline);
+        const result = await Booking.aggregate(pipeline);
 
         // Tạo mảng kết quả chứa doanh thu cho từng tháng
         const revenueByMonth = Array.from({ length: 12 }, (_, i) => {
