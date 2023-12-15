@@ -119,8 +119,32 @@ const deleteOrderDetail = async (req, res) => {
     }
 }
 
+const getBookingDetailByPetId = async (req, res) => {
+    try {
+        const { petId } = req.params;
+        const query = { petId }; // Corrected variable name from `id` to `petId`
+        const options = {
+            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
+            limit: parseInt(req.query.limit) || 10,
+            populate: 'serviceId' // Specify the field to populate
+        };
+
+        const result = await BookingDetail.paginate(query, options);
+
+        if (result.docs.length > 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(404).json({ message: "Your pet hasn't booked any services yet." });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     getBookingDetailByBookingId,
     createBookingDetail,
-    deleteOrderDetail
+    deleteOrderDetail,
+    getBookingDetailByPetId
 }

@@ -1,20 +1,78 @@
 const OrderDetail = require('../models/OrderDetail');
+const mongoose = require('mongoose')
 
 const getOrderDetailByOrderId = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const orderDetails = await OrderDetail.find({ orderId }).populate('productId');
-        if (!orderDetails) {
-            return res.status(404).json({
-                message: 'OrderDetail not found!'
-            });
+
+        const orderDetails = await OrderDetail.aggregate([
+            {
+                $match: { orderId: new mongoose.Types.ObjectId(orderId) }
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'productId',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            {
+                $unwind: "$product"
+            },
+            {
+                $addFields: {
+                    isWithinSale: {
+                        $and: [
+                            { $gte: ["$product.saleStartTime", "$createdAt"] },
+                            { $lte: ["$product.saleEndTime", "$createdAt"] }
+                        ]
+                    },
+                    discountedPrice: {
+                        $cond: {
+                            if: {
+                                $and: [
+                                    "$product.saleStartTime",
+                                    "$product.saleEndTime",
+                                    { $gte: ["$product.saleStartTime", "$createdAt"] },
+                                    { $lte: ["$product.saleEndTime", "$createdAt"] }
+                                ]
+                            },
+                            then: {
+                                $multiply: [
+                                    "$quantity",
+                                    { $subtract: ["$product.price", { $multiply: ["$product.price", { $divide: ["$product.discount", 100] }] }] }
+                                ]
+                            },
+                            else: { $multiply: ["$quantity", "$product.price"] }
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    orderId: 1,
+                    productId: 1,
+                    quantity: 1,
+                    price: "$discountedPrice",
+                    product: 1,
+                    createdAt: 1,
+                    updatedAt: 1
+                }
+            }
+        ]);
+
+        if (!orderDetails || orderDetails.length === 0) {
+            return res.status(404).json({ message: 'OrderDetails not found!' });
         }
-        res.status(200).json(orderDetails)
+
+        res.status(200).json(orderDetails);
     } catch (err) {
-        console.log(err)
-        res.status(500).json(err)
+        console.log(err);
+        res.status(500).json(err);
     }
-}
+};
+
 
 const createOrderDetail = async (req, res) => {
     try {
