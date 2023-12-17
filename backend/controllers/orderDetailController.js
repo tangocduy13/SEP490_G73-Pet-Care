@@ -24,8 +24,8 @@ const getOrderDetailByOrderId = async (req, res) => {
                 $addFields: {
                     isWithinSale: {
                         $and: [
-                            { $gte: ["$product.saleStartTime", "$createdAt"] },
-                            { $lte: ["$product.saleEndTime", "$createdAt"] }
+                            { $gte: ["$createdAt", "$product.saleStartTime"] },
+                            { $lte: ["$createdAt", "$product.saleEndTime"] }
                         ]
                     },
                     discountedPrice: {
@@ -34,8 +34,8 @@ const getOrderDetailByOrderId = async (req, res) => {
                                 $and: [
                                     "$product.saleStartTime",
                                     "$product.saleEndTime",
-                                    { $gte: ["$product.saleStartTime", "$createdAt"] },
-                                    { $lte: ["$product.saleEndTime", "$createdAt"] }
+                                    { $gte: ["$createdAt", "$product.saleStartTime"] },
+                                    { $lte: ["$createdAt", "$product.saleEndTime"] }
                                 ]
                             },
                             then: {
@@ -55,7 +55,18 @@ const getOrderDetailByOrderId = async (req, res) => {
                     productId: 1,
                     quantity: 1,
                     price: "$discountedPrice",
-                    product: 1,
+                    product: {
+                        _id: "$product._id",
+                        categoryId: "$product.categoryId",
+                        productName: "$product.productName",
+                        quantity: "$product.quantity",
+                        price: "$product.price",
+                        discount: "$product.discount",
+                        saleStartTime: "$product.saleStartTime",
+                        saleEndTime: "$product.saleEndTime",
+                        description: "$product.description",
+                        productImage: "$product.productImage"
+                    },
                     createdAt: 1,
                     updatedAt: 1
                 }
@@ -63,7 +74,7 @@ const getOrderDetailByOrderId = async (req, res) => {
         ]);
 
         if (!orderDetails || orderDetails.length === 0) {
-            return res.status(404).json({ message: 'OrderDetails not found!' });
+            return res.status(404).json({ message: 'OrderDetail not found!' });
         }
 
         res.status(200).json(orderDetails);
@@ -73,6 +84,16 @@ const getOrderDetailByOrderId = async (req, res) => {
     }
 };
 
+
+// dùng để xóa dữ liệu rác
+const deleteMany = async (req, res) => {
+    try {
+        const result = await OrderDetail.deleteMany();
+        res.status(200).json({ message: "Xóa tất cả orderDetail" })
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
 
 const createOrderDetail = async (req, res) => {
     try {
@@ -110,5 +131,6 @@ const deleteOrderDetail = async (req, res) => {
 module.exports = {
     getOrderDetailByOrderId,
     createOrderDetail,
-    deleteOrderDetail
+    deleteOrderDetail,
+    deleteMany
 }
