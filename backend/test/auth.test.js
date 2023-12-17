@@ -209,7 +209,7 @@ describe("POST /register", () => {
             const response = await request(app).post("/register")
                 .send({
                     "fullname": "Tạ Ngọc Duy",
-                    "email": "tangocduy@gmail.com",
+                    "email": "duytangoc@gmail.com",
                     "password": "Qqq123123@",
                     "passwordConfirm": "Qqq123123@",
                     "role": "customer"
