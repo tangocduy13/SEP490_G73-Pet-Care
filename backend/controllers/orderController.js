@@ -68,8 +68,9 @@ const getAllOrderByUserId = async (req, res) => {
         }
 
         const options = {
-            page: parseInt(page) || 1, // Trang mặc định là 1
-            limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 10
+            // bỏ phân trang vì số lượng order ít để phân trang ko hợp lý
+            // page: parseInt(page) || 1, // Trang mặc định là 1
+            // limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 10
             populate: 'userId'
         };
 
