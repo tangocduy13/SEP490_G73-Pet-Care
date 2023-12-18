@@ -57,7 +57,7 @@ const getBooking = async (req, res) => {
 const getAllBookingByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;
-        const bookings = await Booking.find({ userId });
+        const bookings = await Booking.find({ userId }).populate('userId');
         if (!bookings) {
             return res.status(404).json({
                 error: "UserId = :" + userId + " has no Bookings in the Database"

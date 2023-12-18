@@ -59,7 +59,7 @@ const getAllOrderByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        const orders = await Order.find({ userId });
+        const orders = await Order.find({ userId }).populate('userId');
         if (!orders) {
             return res.status(404).json({
                 error: "UserId = :" + userId + " has no Orders in the Database"
