@@ -5,9 +5,26 @@ const User = require('../models/User')
 
 const getTotalOrderByDate = async (req, res) => {
     try {
-        const totalOrders = await Order.find()
-        res.status(200).json({totalOrders})
+        let { startDate, endDate } = req.query;
+
+        // Check if startDate and endDate are provided
+        if (!startDate || !endDate) {
+            const totalOrders = await Order.find();
+            return res.status(200).json({ totalOrders });
+        }
+
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+
+        // Query orders with status "Đã nhận hàng" and createdAt between startDate and endDate
+        const totalOrders = await Order.find({
+            status: 'Đã nhận hàng',
+            createdAt: { $gte: startDate, $lte: endDate },
+        });
+
+        res.status(200).json({ totalOrders });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -28,6 +45,7 @@ const getTotalRevenueByDate = async (req, res) => {
         const totalRevenue = await Order.aggregate([
             {
                 $match: {
+                    status: 'Đã nhận hàng',
                     createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
                 },
             },
@@ -46,9 +64,29 @@ const getTotalRevenueByDate = async (req, res) => {
 
 const getTotalCustomer = async (req, res) => {
     try {
-        const user = await User.find()
-        res.status(200).json(user)
+        let { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            // Nếu không có startDate và endDate, lấy tất cả userId từ các đơn hàng có trạng thái "Đã nhận hàng"
+            const userIds = await Order.distinct('userId', { status: 'Đã nhận hàng' });
+            const totalCustomers = userIds.length;
+            return res.status(200).json({ totalCustomers, userIds });
+        }
+
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+
+        // Query distinct userIds with orders having status "Đã nhận hàng" and createdAt between startDate and endDate
+        const userIds = await Order.distinct('userId', {
+            status: 'Đã nhận hàng',
+            createdAt: { $gte: startDate, $lte: endDate },
+        });
+
+        const totalCustomers = userIds.length;
+
+        res.status(200).json({ totalCustomers, userIds });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -80,6 +118,7 @@ const getTotalProductsSoldByDate = async (req, res) => {
             },
             {
                 $match: {
+                    'order.status': 'Đã nhận hàng',
                     'order.createdAt': { $gte: new Date(startDate), $lte: new Date(endDate) },
                 },
             },
