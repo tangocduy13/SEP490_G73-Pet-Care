@@ -123,7 +123,8 @@ const updateUser = async (req, res) => {
         const userFindByPhone = await User.findOne({ phone })
 
         if (userFindByPhone && phone !== "") { // nếu find uer by phone ko null
-            if (userFindByEmail._id === userFindByPhone._id) {
+            console.log(userFindByEmail.email, " | ", userFindByPhone.email) // _id là new Object ko so sánh = nhau đc
+            if (userFindByEmail.email === userFindByPhone.email) {
                 console.log("oke"); // ok sđt của cùng 1 ng
             } else {
                 res.status(400).json({ error: "Số điện thoại này đã có người sử dụng!" })
