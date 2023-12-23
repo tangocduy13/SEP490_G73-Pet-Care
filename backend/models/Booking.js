@@ -12,9 +12,15 @@ const bookingSchema = new mongoose.Schema(
             type: Number,
             default: 1,
         },
-        status: {
-            type: String
+        status: String,
+        recipientName: {
+            type: String,
+            required: true,
         },
+        recipientPhoneNumber: {
+            type: String,
+            required: true,
+        }
     },
     {
         timestamps: true,

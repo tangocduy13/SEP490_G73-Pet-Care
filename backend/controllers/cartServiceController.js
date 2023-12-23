@@ -102,6 +102,8 @@ const checkout = async (req, res) => {
             userId: userId,
             totalPrice: total,
             status: 'Chờ xác nhận',
+            recipientName: req.body.recipientName,
+            recipientPhoneNumber: req.body.recipientPhoneNumber,
         });
         const createdBooking = await booking.save();
 
