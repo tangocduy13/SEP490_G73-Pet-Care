@@ -122,7 +122,7 @@ const updateUser = async (req, res) => {
         const userFindByEmail = await User.findOne({ email })
         const userFindByPhone = await User.findOne({ phone })
 
-        if (userFindByPhone) { // nếu find uer by phone ko null
+        if (userFindByPhone && phone !== "") { // nếu find uer by phone ko null
             if (userFindByEmail._id === userFindByPhone._id) {
                 console.log("oke"); // ok sđt của cùng 1 ng
             } else {
