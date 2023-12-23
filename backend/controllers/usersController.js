@@ -57,37 +57,46 @@ const createUser = async (req, res) => {
         const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
         // check value valid
         if (!fullname || !email || !password) {
-            res.status(500).json({
+            res.status(400).json({
                 error: "fullname, email, password không được bỏ trống",
             })
+            return;
         }
         //check validate email
-        else if (!emailValidator.validate(email)) {
-            return res.status(500).json({
+        if (!emailValidator.validate(email)) {
+            res.status(400).json({
                 error: "Vui lòng nhập đúng email"
             })
+            return;
         }
-        // check duplicate email
-        const duplicate = await User.findOne({ email: email })
-        if (duplicate) {
-            res.json({
-                error: "Email này đã được sử dụng"
-            })
+        const [duplicateEmail, duplicatePhoneNumber] = await Promise.all([
+            User.findOne({ email }),
+            User.findOne({ phone })
+        ])
+        // check duplicate phonenumber
+        if (duplicatePhoneNumber) {
+            res.status(400).json({ error: "Số điện thoại này đã được sử dụng" })
+            return;
         }
-        else {
-            const hashPassword = await bcrypt.hash(password, 10)
 
-            const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
-            if (!user) {
-                res.status(500).json({
-                    error: "Server error! Please try again"
-                })
-            } else {
-                res.status(201).json({
-                    message: "Create successful",
-                    User: user,
-                })
-            }
+        // check duplicate email
+        if (duplicateEmail) {
+            res.status(400).json({ error: "Email này đã được sử dụng" })
+            return;
+        }
+
+        const hashPassword = await bcrypt.hash(password, 10)
+
+        const user = await User.create({ fullname, email, "password": hashPassword, role, phone, address, gender, status, userImage })
+        if (!user) {
+            res.status(500).json({
+                error: "Server error! Please try again"
+            })
+        } else {
+            res.status(201).json({
+                message: "Create successful",
+                User: user,
+            })
         }
 
     } catch (err) {
