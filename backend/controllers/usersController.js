@@ -10,10 +10,10 @@ const getAll = async (req, res) => {
         const query = {}
 
         if (fullname) {
-            query.fullname = fullname
+            query.fullname = { $regex: new RegExp(fullname, 'i') };
         }
         if (email) {
-            query.email = email
+            query.email = { $regex: new RegExp(email, 'i') };
         }
         if (role) {
             query.role = role
