@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
         }
 
         const options = {
-            sort: { fullname: 1 }, // sắp xếp tên theo thứ tự bảng chữ cái alpha b
+            sort: { createdAt: -1 }, // sắp xếp tên thời gian tạo acc giảm dần
             page: parseInt(page) || 1, // Trang mặc định là 1
             limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 5 để test phân trang
         }
