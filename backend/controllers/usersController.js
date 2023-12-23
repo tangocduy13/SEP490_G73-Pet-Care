@@ -117,6 +117,19 @@ const updateUser = async (req, res) => {
         user.gender = gender
         user.status = status
         user.userImage = userImage
+
+        // check duplicate phone number
+        const userFindByEmail = await User.findOne({ email })
+        const userFindByPhone = await User.findOne({ phone })
+
+        if (userFindByPhone) { // nếu find uer by phone ko null
+            if (userFindByEmail._id === userFindByPhone._id) {
+                console.log("oke"); // ok sđt của cùng 1 ng
+            } else {
+                res.status(400).json({ error: "Số điện thoại này đã có người sử dụng!" })
+                return;
+            }
+        }
         // update user
         const result = await user.save()
         if (result) {

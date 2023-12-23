@@ -10,11 +10,6 @@ const validatePhoneNumberInput = [
             if (value !== null && !/^\d{10}$/.test(value)) {
                 throw new Error("Số điện thoại bạn nhập không đúng")
             }
-            // check duplidate phone number nếu ng dùng nhập
-            const duplidatePhone = User.find({ phone: value })
-            if (duplidatePhone) {
-                throw new Error("Số điện thoại này đã được sử dụng! Xin vui lòng nhập số điện thoại khác")
-            }
             return true;
         }),
     (req, res, next) => {
