@@ -119,8 +119,13 @@ const updateUser = async (req, res) => {
         user.userImage = userImage
 
         // check duplicate phone number
-        const userFindByEmail = await User.findOne({ email })
-        const userFindByPhone = await User.findOne({ phone })
+        // const userFindByEmail = await User.findOne({ email })
+        // const userFindByPhone = await User.findOne({ phone })
+
+        const [userFindByEmail, userFindByPhone] = await Promise.all([
+            User.findOne({ email }),
+            User.findOne({ phone })
+        ])
 
         if (userFindByPhone && phone !== "") { // nếu find uer by phone ko null
             console.log(userFindByEmail.email, " | ", userFindByPhone.email) // _id là new Object ko so sánh = nhau đc
