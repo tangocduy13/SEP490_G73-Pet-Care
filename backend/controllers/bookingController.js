@@ -10,9 +10,9 @@ const getAllBooking = async (req, res) => {
         if (userId) {
             query.userId = userId;
         }
-        if (status) {
-            query.status = status === 'true';
-        }
+        if (status) { // duy sửa lại lọc booking = status
+            query.status = status;
+        } else query.status = "Chờ xác nhận"
         if (startDate && endDate) {
             query.createdAt = {
                 $gte: new Date(startDate), // Ngày bắt đầu
