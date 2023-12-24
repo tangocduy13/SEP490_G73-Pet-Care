@@ -12,7 +12,7 @@ const viewCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
 
-        const cartItems = await CartService.find({ userId }).populate('petId').populate('serviceId');
+        const cartItems = await CartService.find({ userId }).populate('petId').populate('serviceId').populate('userId');
         res.status(200).json(cartItems);
     } catch (err) {
         console.error(err);
