@@ -18,9 +18,6 @@ const getAll = async (req, res) => {
         if (role) {
             query.role = role
         }
-        if (status) {
-            query.status = status
-        } else query.status = "active"
 
         const options = {
             sort: { createdAt: -1 }, // sắp xếp tên thời gian tạo acc giảm dần
@@ -112,7 +109,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { fullname, email, role, phone, address, gender, status, userImage } = req.body
-
+        console.log(req.body)
         const user = await User.findOne({ email: email })
         if (!user) {
             res.status(404).json({

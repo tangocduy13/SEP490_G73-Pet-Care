@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const User = require("../models/User")
-// FE bỏ regex 
-// Chỉ check khi người dùng nhập phone number (FE ko bt kết hợp cả allow null cả regex)
+
+// Dùng riêng cho update my profile
 const validatePhoneNumberInput = [
     body('phone')
         .optional({ nullable: true })
