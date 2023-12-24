@@ -11,7 +11,6 @@ const validateCreatePet = async (req, res, next) => {
             categoryId: yup.string().trim().required('Vui lòng chọn loại thú cưng'),
             height: yup.number().nullable().moreThan(0, 'Chiều cao phải lớn hơn 0'),
             weight: yup.number().nullable().moreThan(0, 'Cân nặng phải lớn hơn 0'),
-            color: yup.string().optional().matches(/^[a-zA-Z]+$/, 'Màu lông không hợp lệ'),
         })
         await schema.validate(data);
         next();
@@ -31,7 +30,6 @@ const validateUpdatePet = async (req, res, next) => {
             categoryId: yup.string().trim().required('Vui lòng chọn loại thú cưng'),
             height: yup.number().nullable().moreThan(0, 'Chiều cao phải lớn hơn 0'),
             weight: yup.number().nullable().moreThan(0, 'Cân nặng phải lớn hơn 0'),
-            color: yup.string().optional('Màu lông không hợp lệ')
         });
         await schema.validate(data);
         next();
