@@ -19,8 +19,8 @@ const getAll = async (req, res) => {
             query.role = role
         }
         if (status) {
-            query.status = status === 'true'
-        }
+            query.status = status
+        } else query.status = "active"
 
         const options = {
             sort: { createdAt: -1 }, // sắp xếp tên thời gian tạo acc giảm dần
