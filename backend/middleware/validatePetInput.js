@@ -1,88 +1,45 @@
-const { body, validationResult } = require('express-validator')
-const validator = require('validator')
+const yup = require('yup')
 
-const validateCreatePet = [
-    body('userId').trim().notEmpty().withMessage('Không nhận được ID người dùng'),
-    body('petName').trim().notEmpty().withMessage('Vui lòng nhập tên thú cưng')
-        .matches(/^[\p{L}\s]+$/u).withMessage('Tên sản phẩm không chứa ký tự đặc biệt'),
-    body('categoryId').trim().notEmpty().withMessage('Vui lòng chọn loại thú cưng'),
-    body('height')
-        .trim()
-        .optional({ nullable: true })
-        .custom((value, { req }) => {
-            if (value === "") return true;
-            if (!validator.default.isNumeric(value)) {
-                throw new Error("Chiều cao phải là một số")
-            }
-            if (parseFloat(value) <= 0) {
-                throw new Error("Chiều cao phải lớn hơn 0")
-            }
-
-        }),
-    body('weight')
-        .trim()
-        .optional({ nullable: true })
-        .custom((value, { req }) => {
-            if (value === "") return true;
-            if (!validator.default.isNumeric(value)) {
-                throw new Error("Cân nặng phải là một số")
-            }
-            if (parseFloat(value) <= 0) {
-                throw new Error("Cân nặng phải lớn hơn 0")
-            }
-
-        }),
-    body('color').optional().isString().withMessage('Màu lông không hợp lệ'),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array()[0].msg })
-        } else next();
+// không custom validate cho height và weight là 1 sô thập phân đc => do non
+const validateCreatePet = async (req, res, next) => {
+    try {
+        const data = req.body;
+        let schema = yup.object().shape({
+            userId: yup.string().trim().required('Không nhận được ID người dùng'),
+            petName: yup.string().trim().required('Vui lòng nhập tên thú cưng')
+                .matches(/^[\p{L}\s]+$/u, 'Tên thú cưng không chứa ký tự đặc biệt'),
+            categoryId: yup.string().trim().required('Vui lòng chọn loại thú cưng'),
+            height: yup.number().nullable().moreThan(0, 'Chiều cao phải lớn hơn 0'),
+            weight: yup.number().nullable().moreThan(0, 'Cân nặng phải lớn hơn 0'),
+            color: yup.string().optional().matches(/^[a-zA-Z]+$/, 'Màu lông không hợp lệ'),
+        })
+        await schema.validate(data);
+        next();
+    } catch (error) {
+        res.status(400).json({ error: error.errors[0] })
     }
-]
+}
 
-const validateUpdatePet = [
-    body('id').trim().notEmpty().withMessage('Không nhận được ID của thú cưng'),
-    body('userId').trim().notEmpty().withMessage('Không nhận được ID người dùng'),
-    body('petName').trim().notEmpty().withMessage('Vui lòng nhập tên thú cưng')
-        .matches(/^[\p{L}\s]+$/u).withMessage('Tên thú cưng không chứa ký tự đặc biệt'),
-    body('categoryId').trim().notEmpty().withMessage('Vui lòng chọn loại thú cưng'),
-    body('height')
-        .trim()
-        .optional({ nullable: true })
-        .custom((value, { req }) => {
-            if (value === "") return true;
-            if (!validator.default.isNumeric(value)) {
-                throw new Error("Chiều cao phải là một số")
-            }
-            if (parseFloat(value) <= 0) {
-                throw new Error("Chiều cao phải lớn hơn 0")
-            }
-
-        }),
-    body('weight')
-        .trim()
-        .optional({ nullable: true })
-        .custom((value, { req }) => {
-            if (value === "") return true;
-            if (!validator.default.isNumeric(value)) {
-                throw new Error("Cân nặng phải là một số")
-            }
-            if (parseFloat(value) <= 0) {
-                throw new Error("Cân nặng phải lớn hơn 0")
-            }
-
-        }),
-    body('color').optional().isString().withMessage('Màu lông không hợp lệ'),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array()[0].msg })
-        } else next();
+const validateUpdatePet = async (req, res, next) => {
+    try {
+        const data = req.body;
+        let schema = yup.object().shape({
+            id: yup.string().trim().required('Không nhận được ID của thú cưng'),
+            userId: yup.string().trim().required('Không nhận được ID người dùng'),
+            petName: yup.string().trim().required('Vui lòng nhập tên thú cưng')
+                .matches(/^[\p{L}\s]+$/u, 'Tên thú cưng không chứa ký tự đặc biệt'),
+            categoryId: yup.string().trim().required('Vui lòng chọn loại thú cưng'),
+            height: yup.number().nullable().moreThan(0, 'Chiều cao phải lớn hơn 0'),
+            weight: yup.number().nullable().moreThan(0, 'Cân nặng phải lớn hơn 0'),
+            color: yup.string().optional('Màu lông không hợp lệ')
+        });
+        await schema.validate(data);
+        next();
+    } catch (error) {
+        res.status(400).json({ error: error.errors[0] })
+        console.log(error);
     }
-]
+}
 
 module.exports = {
     validateCreatePet,
