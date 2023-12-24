@@ -8,7 +8,7 @@ const getTotalBookingByDate = async (req, res) => {
 
         // kiểm tra nếu ngày bắt đầu và ngày kết thúc không có thì lấy tất cả
         if (!startDate || !endDate) {
-            const totalBookings = await Booking.find();
+            const totalBookings = await Booking.find({status: 'Hoàn thành'});
             return res.status(200).json({ totalBookings });
         }
 
