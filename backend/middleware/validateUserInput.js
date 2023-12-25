@@ -18,7 +18,7 @@ const validateUserInput = async (req, res, next) => {
             phone: yup.string()
                 .trim()
                 .matches(/^\d{10}$/, 'Số điện thoại phải có đúng 10 chữ số')
-                .optional(),
+                .nullable(),
             address: yup.string().trim().optional(),
             gender: yup.boolean().required('Vui lòng chọn giới tính'),
             status: yup.string().trim().required("Chọn trạng thái"),

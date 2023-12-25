@@ -70,8 +70,9 @@ const createUser = async (req, res) => {
             User.findOne({ email }),
             User.findOne({ phone })
         ])
+        console.log(duplicatePhoneNumber)
         // check duplicate phonenumber
-        if (duplicatePhoneNumber) {
+        if (duplicatePhoneNumber !== null) {
             res.status(400).json({ error: "Số điện thoại này đã được sử dụng" })
             return;
         }
@@ -109,7 +110,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { fullname, email, role, phone, address, gender, status, userImage } = req.body
-        console.log(req.body)
+        // console.log(req.body)
         const user = await User.findOne({ email: email })
         if (!user) {
             res.status(404).json({
@@ -124,20 +125,25 @@ const updateUser = async (req, res) => {
         user.status = status
         user.userImage = userImage
 
-        const [userFindByEmail, userFindByPhone] = await Promise.all([
-            User.findOne({ email }),
-            User.findOne({ phone })
-        ])
-
-        if (userFindByPhone && phone !== "") { // nếu find uer by phone ko null
-            console.log(userFindByEmail.email, " | ", userFindByPhone.email) // _id là new Object ko so sánh = nhau đc
-            if (userFindByEmail.email === userFindByPhone.email) {
-                console.log("oke"); // ok sđt của cùng 1 ng
+        if (phone) { // nếu như có nhập sđt
+            const [userFindByEmail, userFindByPhone] = await Promise.all([
+                User.findOne({ email }),
+                User.findOne({ phone })
+            ]);
+            console.log(userFindByPhone)
+            if (userFindByPhone !== null) { // nếu như số điện thoại này đã có người sử dụng
+                if (userFindByEmail.email === userFindByPhone.email) {
+                    console.log(userFindByEmail.email, " | ", userFindByPhone.email)
+                    console.log("ok"); // ok sđt của cùng 1 ng
+                } else {
+                    res.status(400).json({ error: "Số điện thoại này đã có người sử dụng!" })
+                    return;
+                }
             } else {
-                res.status(400).json({ error: "Số điện thoại này đã có người sử dụng!" })
-                return;
+                console.log("ok") // ok so này chưa có ai dùng
             }
         }
+
         // update user
         const result = await user.save()
         if (result) {
