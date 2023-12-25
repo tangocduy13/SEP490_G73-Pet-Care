@@ -7,7 +7,7 @@ const validatePhoneNumberInput = [
         .optional({ nullable: true })
         .custom((value, { req }) => {
             if (value === "") return true;
-            if (value !== null && !/^\d{10}$/.test(value)) {
+            if (value !== null && !/^(0[3|5|7|8|9])+([0-9]{8})$/.test(value)) {
                 throw new Error("Số điện thoại bạn nhập không đúng")
             }
             return true;

@@ -17,7 +17,7 @@ const validateUserInput = async (req, res, next) => {
             role: yup.string().trim().required("Role không được thiếu"),
             phone: yup.string()
                 .trim()
-                .matches(/^\d{10}$/, 'Số điện thoại phải có đúng 10 chữ số')
+                .matches(/^(0[3|5|7|8|9])+([0-9]{8})$/, 'Số điện thoại không đúng')
                 .nullable(),
             address: yup.string().trim().optional(),
             gender: yup.boolean().required('Vui lòng chọn giới tính'),
