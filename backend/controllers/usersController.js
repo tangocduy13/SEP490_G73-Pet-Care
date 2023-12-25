@@ -52,24 +52,12 @@ const getAll = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         const { fullname, email, password, role, phone, address, gender, status, userImage } = req.body
-        // check value valid
-        if (!fullname || !email || !password) {
-            res.status(400).json({
-                error: "fullname, email, password không được bỏ trống",
-            })
-            return;
-        }
-        //check validate email
-        if (!emailValidator.validate(email)) {
-            res.status(400).json({
-                error: "Vui lòng nhập đúng email"
-            })
-            return;
-        }
+
         const [duplicateEmail, duplicatePhoneNumber] = await Promise.all([
             User.findOne({ email }),
             User.findOne({ phone })
         ])
+        console.log(phone)
         console.log(duplicatePhoneNumber)
         // check duplicate phonenumber
         if (duplicatePhoneNumber !== null) {
